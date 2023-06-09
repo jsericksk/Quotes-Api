@@ -1,0 +1,6 @@
+{
+    "code-runner.clearPreviousOutput": true,
+    "code-runner.executorMap": {
+        "typescript": "yarn ts-node-dev",
+    }
+}
