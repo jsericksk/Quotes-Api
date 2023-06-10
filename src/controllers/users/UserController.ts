@@ -1,5 +1,7 @@
-import * as createUser from "./register";
+import * as register from "./register";
+import * as login from "./login";
 
 export const UserController = {
-    ...createUser,
+    ...register,
+    ...login
 };

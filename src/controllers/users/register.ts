@@ -11,8 +11,7 @@ interface BodyProps extends Omit<User, "id"> { }
 export const registerValidation = zodValidation((customSchema) => ({
     body: customSchema<BodyProps>(
         z.object({
-            id: z.number().optional(),
-            email: z.string().email(),
+            email: z.string().email().min(6),
             username: z.string().min(3),
             password: z.string().min(6),
         })

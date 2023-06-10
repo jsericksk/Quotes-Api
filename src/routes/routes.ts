@@ -7,5 +7,6 @@ import { AuthRoute } from "../commom/RouteConstants";
 const router = Router();
 
 router.post(AuthRoute.register, UserController.registerValidation, UserController.register);
+router.post(AuthRoute.login, UserController.loginValidation, UserController.login);
 
 export { router };
