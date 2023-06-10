@@ -26,7 +26,7 @@ export async function login(req: Request<{}, {}, BodyProps>, res: Response) {
 
     const user = await UserService.getUserByEmail(credentials.email);
     if (user instanceof Error) {
-        return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password."));
+        return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
     }
 
     const passwordMatch = await PasswordCrypto.verifyPassword(credentials.password, user.password);
@@ -38,5 +38,5 @@ export async function login(req: Request<{}, {}, BodyProps>, res: Response) {
         return res.status(StatusCodes.OK).json({ accessToken });
     }
 
-    return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password."));
+    return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
 }

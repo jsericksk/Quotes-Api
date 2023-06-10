@@ -64,7 +64,7 @@ describe(
             expect(res.body).toHaveProperty("errors.body.email");
         });
 
-        it("Should give error when trying to register with a username that is too short.", async () => {
+        it("Should give error when trying to register with a username that is too short", async () => {
             const user: Omit<User, "id"> = {
                 email: "john@gmail.com",
                 username: "jo",
@@ -79,7 +79,7 @@ describe(
             expect(res.body).toHaveProperty("errors.body.username");
         });
 
-        it("Should give error when trying to register with a password that is too short.", async () => {
+        it("Should give error when trying to register with a password that is too short", async () => {
             const user: Omit<User, "id"> = {
                 email: "john@gmail.com",
                 username: "john",
