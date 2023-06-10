@@ -1,4 +1,3 @@
-import { extname } from "path";
 import { Request, Response } from "express";
 
 import { User } from "../../models/User";
