@@ -11,7 +11,7 @@ export async function registerUser(user: Omit<User, "id">): Promise<number | Err
             return new Error("Email not available.");
         }
         
-        const hashedPassword = await PasswordCrypto.hashPassword(user.password);
+        const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
         user.password = hashedPassword;
         const [result] = await Knex(Table.Users).insert(user).returning("id");
 

@@ -28,7 +28,7 @@ export async function login(req: Request<{}, {}, BodyProps>, res: Response) {
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
     }
 
-    const passwordMatch = await PasswordCrypto.verifyPassword(credentials.password, user.password);
+    const passwordMatch = await new PasswordCrypto().verifyPassword(credentials.password, user.password);
     if (passwordMatch) {
         const accessToken = new JWTService().generateToken({ uid: user.id });
         if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
