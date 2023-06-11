@@ -30,7 +30,7 @@ export async function login(req: Request<{}, {}, BodyProps>, res: Response) {
 
     const passwordMatch = await PasswordCrypto.verifyPassword(credentials.password, user.password);
     if (passwordMatch) {
-        const accessToken = JWTService.generateToken({ uid: user.id });
+        const accessToken = new JWTService().generateToken({ uid: user.id });
         if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
         }
