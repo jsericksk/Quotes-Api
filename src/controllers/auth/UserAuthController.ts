@@ -3,25 +3,27 @@ import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
 import { JWTService, JWTError } from "../../services/auth/JWTService";
 import { PasswordCrypto } from "../../services/auth/PasswordCrypto";
-import { UserService } from "../../services/users/UserService";
 import { User } from "../../models/User";
+import { UserAuthService } from "../../services/auth/UserAuthService";
 
 export class UserAuthController {
 
-    async register(req: Request, res: Response): Promise<Response> {
-        const user = await UserService.registerUser(req.body);
+    constructor(private userAuthService: UserAuthService) { }
+
+    register = async (req: Request, res: Response): Promise<Response> => {
+        const user = await this.userAuthService.register(req.body);
 
         if (user instanceof Error) {
             return res.status(500).json(simpleError(user.message));
         }
 
         return res.status(StatusCodes.CREATED).json(user);
-    }
-    
-    async login(req: Request, res: Response): Promise<Response> {
+    };
+
+    login = async (req: Request, res: Response): Promise<Response> => {
         const credentials = req.body as Omit<User, "id" | "username">;
 
-        const user = await UserService.getUserByEmail(credentials.email);
+        const user = await this.userAuthService.getUserByEmail(credentials.email);
         if (user instanceof Error) {
             return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
         }
@@ -36,5 +38,5 @@ export class UserAuthController {
         }
 
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
-    }
+    };
 }

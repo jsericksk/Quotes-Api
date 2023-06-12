@@ -2,11 +2,11 @@ import { Table } from "../../database/Tables";
 import { Knex } from "../../database/knex/Knex";
 import { User } from "../../models/User";
 import { PasswordCrypto } from "../auth/PasswordCrypto";
-import { UserService } from "./UserService";
+import { UserService2 } from "./UserService";
 
 export async function registerUser(user: Omit<User, "id">): Promise<number | Error> {
     try {
-        const userEmail = await UserService.getUserByEmail(user.email);
+        const userEmail = await UserService2.getUserByEmail(user.email);
         if ("email" in userEmail ) {
             return new Error("Email not available.");
         }
