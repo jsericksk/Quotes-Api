@@ -6,14 +6,14 @@ export interface BodyProps extends Omit<Quote, "id" | "publicationDate"> { }
 
 export interface ParamsProps { id: number }
 
-interface GetAllQueryProps {
+export interface GetAllQueryProps {
     id?: number;
     page?: number;
     limit?: number;
     filter?: string;
 }
 
-export class QuoteRequestValidation {
+export class QuotesRequestValidation {
 
     validateGetAll = zodValidation((customSchema) => ({
         query: customSchema<GetAllQueryProps>(

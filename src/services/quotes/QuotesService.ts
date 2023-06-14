@@ -2,7 +2,7 @@ import { Table } from "../../database/Tables";
 import { Knex } from "../../database/knex/Knex";
 import { Quote } from "../../models/Quote";
 
-export class QuoteService {
+export class QuotesService {
 
     async getAll(page: number, limit: number, filter: string, id = 0): Promise<Quote[] | Error> {
         try {
@@ -84,6 +84,20 @@ export class QuoteService {
             return new Error("Error deleting quote");
         } catch (error) {
             return new Error("Unknown error deleting quote");
+        }
+    }
+
+    async count(filter = ""): Promise<number | Error> {
+        try {
+            const [{ count }] = await Knex(Table.Quotes)
+                .where("quote", "like", `%${filter}%`)
+                .count<[{ count: number }]>("* as count");
+
+            if (Number.isInteger(Number(count))) return Number(count);
+
+            return new Error("Error when querying the total number of records");
+        } catch (error) {
+            return new Error("Unknown error when querying the total number of records");
         }
     }
 }
