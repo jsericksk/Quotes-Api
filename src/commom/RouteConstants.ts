@@ -4,10 +4,9 @@ export const AuthRoute = {
 };
 
 export const QuoteRoute = {
-    create: "/quotes",
     getAll: "/quotes",
-    getAllFromUser: "/quotes/user/:id",
     getById: "/quotes/:id",
+    create: "/quotes",
     update: "/quotes/:id",
     delete: "/quotes/:id",
 };
