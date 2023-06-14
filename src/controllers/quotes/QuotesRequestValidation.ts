@@ -2,7 +2,7 @@ import { z } from "zod";
 import { zodValidation } from "../../middlewares/zodValidation";
 import { Quote } from "../../models/Quote";
 
-export interface BodyProps extends Omit<Quote, "id" | "publicationDate"> { }
+export interface BodyProps extends Omit<Quote, "id"> { }
 
 export interface ParamsProps { id: number }
 
@@ -39,7 +39,6 @@ export class QuotesRequestValidation {
             z.object({
                 quote: z.string().min(7),
                 author: z.string(),
-                postedBy: z.string(),
             })
         )
     }));

@@ -2,11 +2,7 @@ export interface Quote {
     id: number,
     quote: string,
     author: string,
-    postedBy: PostedBy,
+    postedByUsername?: string,
+    postedByUserId?: number,
     publicationDate?: Date
-}
-
-export interface PostedBy {
-    userId: number;
-    username: string;
 }
