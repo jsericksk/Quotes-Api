@@ -1,6 +1,8 @@
 import { Knex } from "knex";
 import path from "path";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 export const development: Knex.Config = {
     client: "pg",
@@ -45,9 +47,3 @@ export const production: Knex.Config = {
         directory: path.resolve(__dirname, "..", "migrations"),
     },
 };
-
-function main() {
-    console.log("Senha: " + process.env.DATABASE_PASSWORD);
-}
-
-main();
