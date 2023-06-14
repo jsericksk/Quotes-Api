@@ -45,3 +45,9 @@ export const production: Knex.Config = {
         directory: path.resolve(__dirname, "..", "migrations"),
     },
 };
+
+function main() {
+    console.log("Senha: " + process.env.DATABASE_PASSWORD);
+}
+
+main();
