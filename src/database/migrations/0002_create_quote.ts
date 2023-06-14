@@ -8,7 +8,8 @@ export async function up(knex: Knex) {
             table.bigIncrements("id").primary().index();
             table.string("quote").notNullable().unique().checkLength(">=", 6);
             table.string("author").notNullable().checkLength(">=", 3);
-            table.jsonb("postedBy").notNullable();
+            table.string("postedByUsername").notNullable();
+            table.bigint("postedByUserId").notNullable();
             table.date("publicationDate").notNullable();
         })
         .then(() => {
