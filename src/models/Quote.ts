@@ -3,5 +3,5 @@ export interface Quote {
     quote: string,
     author: string,
     postedBy: string,
-    publicationDate: Date
+    publicationDate?: Date
 }

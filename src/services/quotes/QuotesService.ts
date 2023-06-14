@@ -45,7 +45,12 @@ export class QuotesService {
 
     async create(quote: Omit<Quote, "id">): Promise<number | Error> {
         try {
-            const [result] = await Knex(Table.Quotes).insert(quote).returning("id");
+            const quoteToCreate: Omit<Quote, "id"> = {
+                ...quote,
+                publicationDate: new Date()
+            };
+
+            const [result] = await Knex(Table.Quotes).insert(quoteToCreate).returning("id");
 
             if (typeof result === "object") {
                 return result.id;
