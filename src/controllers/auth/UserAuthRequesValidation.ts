@@ -2,9 +2,9 @@ import { z } from "zod";
 import { zodValidation } from "../../middlewares/zodValidation";
 import { User } from "../../models/User";
 
-export class UserAuthReqValidation {
+export class UserAuthRequestValidation {
 
-    validateRegisterRequest = zodValidation((customSchema) => ({
+    validateRegister = zodValidation((customSchema) => ({
         body: customSchema<Omit<User, "id">>(
             z.object({
                 email: z.string().email().min(6),
@@ -14,7 +14,7 @@ export class UserAuthReqValidation {
         ),
     }));
 
-    validateLoginRequest = zodValidation((customSchema) => ({
+    validateLogin = zodValidation((customSchema) => ({
         body: customSchema<Omit<User, "id" | "username">>(
             z.object({
                 email: z.string().email().min(6),
