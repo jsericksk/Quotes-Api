@@ -19,13 +19,9 @@ export class QuotesController {
         const count = await this.quotesService.count(queryProps.filter);
 
         if (result instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                errors: { default: result.message }
-            });
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         } else if (count instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                errors: { default: count.message }
-            });
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(count.message));
         }
 
         res.setHeader("access-control-expose-headers", "x-total-count");

@@ -18,7 +18,7 @@ export class QuotesRequestValidation {
     validateGetAll = zodValidation((customSchema) => ({
         query: customSchema<GetAllQueryProps>(
             z.object({
-                id: z.coerce.number().int().min(1).optional().default(0),
+                id: z.coerce.number().int().min(1).optional(),
                 page: z.coerce.number().int().min(1).optional(),
                 limit: z.coerce.number().int().min(1).optional(),
                 filter: z.coerce.string().optional(),
