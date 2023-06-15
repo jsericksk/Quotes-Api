@@ -48,7 +48,6 @@ export class QuotesRequestValidation {
             z.object({
                 quote: z.string().min(7),
                 author: z.string(),
-                postedBy: z.string()
             })
         ),
         params: customSchema<ParamsProps>(

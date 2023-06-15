@@ -10,7 +10,7 @@ export async function up(knex: Knex) {
             table.string("author").notNullable().checkLength(">=", 3);
             table.string("postedByUsername").notNullable();
             table.bigint("postedByUserId").notNullable();
-            table.date("publicationDate").notNullable();
+            table.timestamp("publicationDate").defaultTo(knex.fn.now());
         })
         .then(() => {
             console.log(`# Created table ${Table.Quotes}`);
