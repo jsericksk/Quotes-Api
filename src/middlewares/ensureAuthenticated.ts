@@ -27,6 +27,8 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
     }
 
     req.headers.userId = jwtData.uid.toString();
+    req.headers.username = jwtData.username;
+    req.headers.email = jwtData.email;
 
     return next();
 }

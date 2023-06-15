@@ -3,14 +3,10 @@ import { QuotesService } from "../../services/quotes/QuotesService";
 import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { UserAuthService } from "../../services/auth/UserAuthService";
 
 export class QuotesController {
 
-    constructor(
-        private quotesService: QuotesService,
-        private userAuthService: UserAuthService
-    ) { }
+    constructor(private quotesService: QuotesService) { }
 
     getAll = async (req: Request, res: Response): Promise<Response> => {
         const queryProps = req.query as GetAllQueryProps;
@@ -47,8 +43,14 @@ export class QuotesController {
     };
 
     create = async (req: Request, res: Response): Promise<Response> => {
-        const authenticatedUserId = req.headers.userId;
+        const authenticatedUserInfo = {
+            id: Number(req.headers.userId),
+            username: req.headers.username as string,
+            email: req.headers.email as string
+        };
         const bodyProps = req.body as BodyProps;
+        bodyProps.postedByUserId = authenticatedUserInfo.id;
+        bodyProps.postedByUsername = authenticatedUserInfo.username;
         const quote = this.quotesService.create(bodyProps);
         if (quote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
