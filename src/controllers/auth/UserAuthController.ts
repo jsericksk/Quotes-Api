@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { JWTService, JWTError } from "../../services/auth/JWTService";
+import { JWTService, JWTError, JwtData } from "../../services/auth/JWTService";
 import { PasswordCrypto } from "../../services/auth/PasswordCrypto";
 import { User } from "../../models/User";
 import { UserAuthService } from "../../services/auth/UserAuthService";
@@ -30,7 +30,12 @@ export class UserAuthController {
 
         const passwordMatch = await new PasswordCrypto().verifyPassword(credentials.password, user.password);
         if (passwordMatch) {
-            const accessToken = new JWTService().generateToken({ uid: user.id });
+            const jwtData: JwtData = {
+                uid: user.id,
+                username: user.username,
+                email: user.email
+            };
+            const accessToken = new JWTService().generateToken(jwtData);
             if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
             }

@@ -3,10 +3,14 @@ import { QuotesService } from "../../services/quotes/QuotesService";
 import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
+import { UserAuthService } from "../../services/auth/UserAuthService";
 
 export class QuotesController {
 
-    constructor(private quotesService: QuotesService) { }
+    constructor(
+        private quotesService: QuotesService,
+        private userAuthService: UserAuthService
+    ) { }
 
     getAll = async (req: Request, res: Response): Promise<Response> => {
         const queryProps = req.query as GetAllQueryProps;
@@ -43,6 +47,7 @@ export class QuotesController {
     };
 
     create = async (req: Request, res: Response): Promise<Response> => {
+        const authenticatedUserId = req.headers.userId;
         const bodyProps = req.body as BodyProps;
         const quote = this.quotesService.create(bodyProps);
         if (quote instanceof Error) {

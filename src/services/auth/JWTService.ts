@@ -2,8 +2,10 @@
 import * as jwt from "jsonwebtoken";
 import "dotenv/config";
 
-interface JwtData {
-    uid: number;
+export interface JwtData {
+    uid: number,
+    username: string,
+    email: string
 }
 
 export enum JWTError {
