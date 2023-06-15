@@ -6,8 +6,8 @@ export async function up(knex: Knex) {
         .schema
         .createTable(Table.Quotes, table => {
             table.bigIncrements("id").primary().index();
-            table.string("quote").notNullable().unique().checkLength(">=", 6);
-            table.string("author").notNullable().checkLength(">=", 3);
+            table.string("quote").notNullable().checkLength(">=", 6);
+            table.string("author").notNullable().checkLength(">=", 1);
             table.string("postedByUsername").notNullable();
             table.bigint("postedByUserId").notNullable();
             table.timestamp("publicationDate").defaultTo(knex.fn.now());

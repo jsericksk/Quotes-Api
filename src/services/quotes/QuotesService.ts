@@ -16,7 +16,7 @@ export class QuotesService {
             if (id > 0 && result.every(item => item.id !== id)) {
                 const resultById = await Knex(Table.Quotes)
                     .select("*")
-                    .where("id", "=", id)
+                    .where("id", id)
                     .first();
 
                 if (resultById) return [...result, resultById];
@@ -37,7 +37,7 @@ export class QuotesService {
 
             if (quote) return quote;
 
-            return new Error("Error getting quote");
+            return new Error("There is no quote with the given id");
         } catch (error) {
             return new Error("Unknown error getting quote");
         }
@@ -60,6 +60,7 @@ export class QuotesService {
 
             return new Error("Error creating quote");
         } catch (error) {
+            console.log(error);
             return new Error("Unknown error creating quote");
         }
     }
@@ -68,11 +69,11 @@ export class QuotesService {
         try {
             const result = await Knex(Table.Quotes)
                 .update(quote)
-                .where("id", "=", id);
+                .where("id", id);
 
             if (result > 0) return;
 
-            return new Error("Error updating quote");
+            return new Error("There is no quote with the given id");
         } catch (error) {
             return new Error("Unknown error updating quote");
         }
@@ -81,12 +82,12 @@ export class QuotesService {
     async deleteById(id: number): Promise<void | Error> {
         try {
             const result = await Knex(Table.Quotes)
-                .where("id", "=", id)
+                .where("id", id)
                 .del();
 
             if (result > 0) return;
 
-            return new Error("Error deleting quote");
+            return new Error("There is no quote with the given id");
         } catch (error) {
             return new Error("Unknown error deleting quote");
         }

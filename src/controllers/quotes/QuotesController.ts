@@ -31,7 +31,7 @@ export class QuotesController {
     };
 
     getById = async (req: Request, res: Response): Promise<Response> => {
-        const quote = this.quotesService.getById(Number(req.params.id));
+        const quote = await this.quotesService.getById(Number(req.params.id));
         if (quote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
         }
@@ -47,7 +47,7 @@ export class QuotesController {
         const bodyProps = req.body as BodyProps;
         bodyProps.postedByUserId = authenticatedUserInfo.id;
         bodyProps.postedByUsername = authenticatedUserInfo.username;
-        const quote = this.quotesService.create(bodyProps);
+        const quote = await this.quotesService.create(bodyProps);
         if (quote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
         }
@@ -56,7 +56,7 @@ export class QuotesController {
 
     updateById = async (req: Request, res: Response): Promise<Response> => {
         const updatedQuote = req.body as BodyProps;
-        const result = this.quotesService.updateById(Number(req.params.id), updatedQuote);
+        const result = await this.quotesService.updateById(Number(req.params.id), updatedQuote);
         if (result instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         }
@@ -64,7 +64,7 @@ export class QuotesController {
     };
 
     deleteById = async (req: Request, res: Response): Promise<Response> => {
-        const result = this.quotesService.deleteById(Number(req.params.id));
+        const result = await this.quotesService.deleteById(Number(req.params.id));
         if (result instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         }
