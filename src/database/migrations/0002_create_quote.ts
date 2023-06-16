@@ -9,7 +9,12 @@ export async function up(knex: Knex) {
             table.string("quote").notNullable().checkLength(">=", 6);
             table.string("author").notNullable().checkLength(">=", 1);
             table.string("postedByUsername").notNullable();
-            table.bigint("postedByUserId").notNullable();
+            table
+                .bigInteger("postedByUserId")
+                .references("id")
+                .inTable(Table.Users)
+                .onUpdate("CASCADE")
+                .onDelete("CASCADE");
             table.timestamp("publicationDate").defaultTo(knex.fn.now());
         })
         .then(() => {
