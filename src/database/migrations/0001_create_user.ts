@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { Table } from "../Tables";
+import { Table } from "../Table";
 
 export async function up(knex: Knex) {
     return knex

@@ -1,4 +1,4 @@
-import { Table } from "../../database/Tables";
+import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { Quote } from "../../models/Quote";
 

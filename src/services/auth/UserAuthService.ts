@@ -1,4 +1,4 @@
-import { Table } from "../../database/Tables";
+import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { User } from "../../models/User";
 import { PasswordCrypto } from "./PasswordCrypto";
@@ -9,7 +9,7 @@ export class UserAuthService {
         try {
             const userEmail = await this.getUserByEmail(user.email);
             if ("email" in userEmail) {
-                return new Error("Email not available.");
+                return new Error("Email not available");
             }
 
             const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
