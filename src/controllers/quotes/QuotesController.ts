@@ -51,7 +51,7 @@ export class QuotesController {
         if (quote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
         }
-        return res.status(StatusCodes.OK).json(quote);
+        return res.status(StatusCodes.CREATED).json(quote);
     };
 
     updateById = async (req: Request, res: Response): Promise<Response> => {
