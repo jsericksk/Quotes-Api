@@ -6,11 +6,6 @@ import { Quote } from "../../src/models/Quote";
 
 describe("DeleteById - Quotes route", () => {
     let authorizationHeader = {};
-    const quote: Omit<Quote, "id"> = {
-        quote: "A imaginação é mais importante que o conhecimento.",
-        author: "Albert Einstein"
-    };
-
     beforeAll(async () => {
         const user: Omit<User, "id"> = {
             email: "john@gmail.com",
@@ -24,6 +19,10 @@ describe("DeleteById - Quotes route", () => {
     });
 
     it("Should delete quote successfully", async () => {
+        const quote: Omit<Quote, "id"> = {
+            quote: "A imaginação é mais importante que o conhecimento.",
+            author: "Albert Einstein"
+        };
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -37,11 +36,11 @@ describe("DeleteById - Quotes route", () => {
         expect(resUpdateById.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
 
-    it("Should give unauthorized error when trying update by id without accessToken", async () => {
+    it("Should give unauthorized error when trying delete by id without accessToken", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
-            .send(quote);
+            .send();
         const quoteId = resCreate.body;
         const resUpdateById = await testServer
             .delete(QuoteRoute.routeForTests + quoteId)
