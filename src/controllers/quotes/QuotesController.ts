@@ -4,6 +4,7 @@ import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
 import { QUOTE_NOT_FOUND } from "../../commom/Constants";
+import { QuoteRoute } from "../../commom/RouteConstants";
 
 export class QuotesController {
 
@@ -11,10 +12,11 @@ export class QuotesController {
 
     getAll = async (req: Request, res: Response): Promise<Response> => {
         const queryProps = req.query as GetAllQueryProps;
-        const result = await this.quotesService.getAll(
-            queryProps.page || 1,
-            queryProps.filter || "",
-        );
+        const page = Number(queryProps.page) || 1;
+        const filter = queryProps.filter || "";
+        const limit = 15;
+
+        const result = await this.quotesService.getAll(page, limit, filter);
         const count = await this.quotesService.count(queryProps.filter);
 
         if (result instanceof Error) {
@@ -26,8 +28,36 @@ export class QuotesController {
         res.setHeader("access-control-expose-headers", "x-total-count");
         res.setHeader("x-total-count", count);
 
-        return res.status(StatusCodes.OK).json(result);
+        const info = this.getPaginationInfo(count, page, limit, filter);
+        const response = {
+            info,
+            results: result,
+        };
+
+        return res.status(StatusCodes.OK).json(response);
     };
+
+    private getPaginationInfo(count: number, page: number, limit: number, filter: string) {
+        const totalCount = count;
+        const totalPages = Math.ceil(totalCount / limit);
+        const nextPage = page < totalPages ? page + 1 : null;
+        const previousPage = page > 1 ? page - 1 : null;
+
+        const getPage = (page: number): string => {
+            if (filter === "") {
+                return `${QuoteRoute.getAll}?page=${page}`;
+            }
+            return `${QuoteRoute.getAll}?page=${page}&filter=${filter}`;
+        };
+
+        const info = {
+            count: totalCount,
+            pages: totalPages,
+            next: nextPage ? getPage(nextPage) : null,
+            previous: previousPage ? getPage(previousPage) : null,
+        };
+        return info;
+    }
 
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));

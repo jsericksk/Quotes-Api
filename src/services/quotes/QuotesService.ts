@@ -5,9 +5,8 @@ import { Quote } from "../../models/Quote";
 
 export class QuotesService {
 
-    async getAll(page: number, filter: string): Promise<Quote[] | Error> {
+    async getAll(page: number, limit: number, filter: string): Promise<Quote[] | Error> {
         try {
-            const limit = 15;
             const result = await Knex(Table.Quotes)
                 .select("*")
                 .where("quote", "like", `%${filter}%`)
