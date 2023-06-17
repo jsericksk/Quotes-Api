@@ -28,20 +28,14 @@ export class QuotesController {
         res.setHeader("access-control-expose-headers", "x-total-count");
         res.setHeader("x-total-count", count);
 
-        const info = this.getPaginationInfo(count, page, limit, filter);
-        const response = {
-            info,
-            results: result,
-        };
-
-        return res.status(StatusCodes.OK).json(response);
-    };
-
-    private getPaginationInfo(count: number, page: number, limit: number, filter: string) {
         const totalCount = count;
         const totalPages = Math.ceil(totalCount / limit);
         const nextPage = page < totalPages ? page + 1 : null;
         const previousPage = page > 1 ? page - 1 : null;
+
+        if (page > totalPages) {
+            return res.status(StatusCodes.NOT_FOUND).json(simpleError("Invalid page, no more items"));
+        }
 
         const getPage = (page: number): string => {
             if (filter === "") {
@@ -56,8 +50,13 @@ export class QuotesController {
             next: nextPage ? getPage(nextPage) : null,
             previous: previousPage ? getPage(previousPage) : null,
         };
-        return info;
-    }
+        const response = {
+            info,
+            results: result,
+        };
+
+        return res.status(StatusCodes.OK).json(response);
+    };
 
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));
