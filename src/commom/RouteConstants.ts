@@ -9,4 +9,5 @@ export const QuoteRoute = {
     create: "/quotes",
     update: "/quotes/:id",
     delete: "/quotes/:id",
+    routeForTests: "/quotes/",
 };
