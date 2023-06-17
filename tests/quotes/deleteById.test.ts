@@ -18,7 +18,7 @@ describe("DeleteById - Quotes route", () => {
         authorizationHeader = { Authorization: `Bearer ${accessToken}` };
     });
 
-    it("Should delete quote successfully", async () => {
+    it("Should delete a quote successfully", async () => {
         const quote: Omit<Quote, "id"> = {
             quote: "A imaginação é mais importante que o conhecimento.",
             author: "Albert Einstein"
@@ -36,7 +36,7 @@ describe("DeleteById - Quotes route", () => {
         expect(resUpdateById.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
 
-    it("Should give unauthorized error when trying delete by id without accessToken", async () => {
+    it("Should give an unauthorized error when trying to delete by id without an accessToken", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -49,7 +49,7 @@ describe("DeleteById - Quotes route", () => {
         expect(resUpdateById.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
-    it("Should give bad request error when trying delete by id with invalid quote id", async () => {
+    it("Should give a bad request error when trying to delete by id with an invalid quote id", async () => {
         const res = await testServer
             .delete(QuoteRoute.routeForTests + "blabla")
             .set(authorizationHeader)
@@ -59,7 +59,7 @@ describe("DeleteById - Quotes route", () => {
         expect(res.body).toHaveProperty("errors.params.id");
     });
 
-    it("Should give error when trying delete quote that not exists", async () => {
+    it("Should give an error when trying to delete a quote that does not exist", async () => {
         const res = await testServer
             .delete(QuoteRoute.routeForTests + 200)
             .set(authorizationHeader)

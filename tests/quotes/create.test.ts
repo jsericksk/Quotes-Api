@@ -18,7 +18,7 @@ describe("Create - Quotes route", () => {
         authorizationHeader = { Authorization: `Bearer ${accessToken}` };
     });
 
-    it("Should create quote successfully", async () => {
+    it("Should create a quote successfully", async () => {
         const quote: Omit<Quote, "id"> = {
             quote: "A imaginação é mais importante que o conhecimento.",
             author: "Albert Einstein"
@@ -33,7 +33,7 @@ describe("Create - Quotes route", () => {
         expect(typeof res.body).toEqual("number");
     });
 
-    it("Should give unauthorized error when create without accessToken", async () => {
+    it("Should give unauthorized error when creating without accessToken", async () => {
         const quote: Omit<Quote, "id"> = {
             quote: "A imaginação é mais importante que o conhecimento.",
             author: "Albert Einstein"
@@ -46,7 +46,7 @@ describe("Create - Quotes route", () => {
         expect(res.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
-    it("Should give bad request error when trying create with empty fields", async () => {
+    it("Should give bad request error when trying to create with empty fields", async () => {
         const res = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -57,7 +57,7 @@ describe("Create - Quotes route", () => {
         expect(res.body).toHaveProperty("errors.body.author");
     });
 
-    it("Should give bad request error when trying create with quote too short", async () => {
+    it("Should give bad request error when trying to create with a quote that is too short", async () => {
         const quote: Omit<Quote, "id"> = {
             quote: "Yeap",
             author: "Unknown"

@@ -23,7 +23,7 @@ describe("GetById - Quotes route", () => {
         authorizationHeader = { Authorization: `Bearer ${accessToken}` };
     });
 
-    it("Should get quote by id successfully", async () => {
+    it("Should get a quote by id successfully", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -42,7 +42,7 @@ describe("GetById - Quotes route", () => {
         expect(resGetById.body).toHaveProperty("postedByUserId");
     });
 
-    it("Should give unauthorized error when trying get by id without accessToken", async () => {
+    it("Should give an unauthorized error when trying to get by id without an accessToken", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -55,7 +55,7 @@ describe("GetById - Quotes route", () => {
         expect(resGetById.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
-    it("Should give bad request error when trying get by id with invalid quote id", async () => {
+    it("Should give a bad request error when trying to get by id with an invalid quote id", async () => {
         const res = await testServer
             .get(QuoteRoute.routeForTests + "blablabla")
             .set(authorizationHeader)
@@ -65,7 +65,7 @@ describe("GetById - Quotes route", () => {
         expect(res.body).toHaveProperty("errors.params.id");
     });
 
-    it("Should give error when trying get by id with quote that not exists", async () => {
+    it("Should give an error when trying to get by id with a quote that does not exist", async () => {
         const res = await testServer
             .get(QuoteRoute.routeForTests + 1000)
             .set(authorizationHeader)

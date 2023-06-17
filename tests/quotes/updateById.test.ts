@@ -23,7 +23,7 @@ describe("UpdateById - Quotes route", () => {
         authorizationHeader = { Authorization: `Bearer ${accessToken}` };
     });
 
-    it("Should udpate quote successfully", async () => {
+    it("Should udpate a quote successfully", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -37,7 +37,7 @@ describe("UpdateById - Quotes route", () => {
         expect(resUpdateById.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
 
-    it("Should give unauthorized error when trying update by id without accessToken", async () => {
+    it("Should give an unauthorized error when trying to update by id without an accessToken", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -50,7 +50,7 @@ describe("UpdateById - Quotes route", () => {
         expect(resUpdateById.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
-    it("Should give bad request error when trying update by id with empty fields", async () => {
+    it("Should give a bad request error when trying to update by id with empty fields", async () => {
         const resCreate = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
@@ -66,7 +66,7 @@ describe("UpdateById - Quotes route", () => {
         expect(resUpdateById.body).toHaveProperty("errors.body.author");
     });
 
-    it("Should give bad request error when trying update by id with invalid quote id", async () => {
+    it("Should give a bad request error when trying to update by id with an invalid quote id", async () => {
         const res = await testServer
             .put(QuoteRoute.routeForTests + "blabla")
             .set(authorizationHeader)
@@ -76,7 +76,7 @@ describe("UpdateById - Quotes route", () => {
         expect(res.body).toHaveProperty("errors.params.id");
     });
 
-    it("Should give error when trying update quote that not exists", async () => {
+    it("Should give an error when trying to update a quote that does not exist", async () => {
         const res = await testServer
             .put(QuoteRoute.routeForTests + 200)
             .set(authorizationHeader)
