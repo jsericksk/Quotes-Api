@@ -13,9 +13,7 @@ export class QuotesController {
         const queryProps = req.query as GetAllQueryProps;
         const result = await this.quotesService.getAll(
             queryProps.page || 1,
-            queryProps.limit || 7,
             queryProps.filter || "",
-            Number(queryProps.id || 1)
         );
         const count = await this.quotesService.count(queryProps.filter);
 

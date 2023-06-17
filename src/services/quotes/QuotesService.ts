@@ -5,23 +5,14 @@ import { Quote } from "../../models/Quote";
 
 export class QuotesService {
 
-    async getAll(page: number, limit: number, filter: string, id = 0): Promise<Quote[] | Error> {
+    async getAll(page: number, filter: string): Promise<Quote[] | Error> {
         try {
+            const limit = 15;
             const result = await Knex(Table.Quotes)
                 .select("*")
-                .where("id", Number(id))
-                .orWhere("quote", "like", `%${filter}%`)
+                .where("quote", "like", `%${filter}%`)
                 .offset((page - 1) * limit)
                 .limit(limit);
-
-            if (id > 0 && result.every(item => item.id !== id)) {
-                const resultById = await Knex(Table.Quotes)
-                    .select("*")
-                    .where("id", id)
-                    .first();
-
-                if (resultById) return [...result, resultById];
-            }
 
             return result;
         } catch (error) {
