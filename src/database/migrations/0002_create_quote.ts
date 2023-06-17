@@ -11,8 +11,7 @@ export async function up(knex: Knex) {
             table.string("postedByUsername").notNullable();
             table
                 .bigInteger("postedByUserId")
-                .index()
-                .notNullable()
+                .unsigned()
                 .references("id")
                 .inTable(Table.Users)
                 .onUpdate("CASCADE")
