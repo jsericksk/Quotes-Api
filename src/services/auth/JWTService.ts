@@ -11,6 +11,7 @@ export interface JwtData {
 export enum JWTError {
     JWTSecretNotFound = "JwtSecretNotFound",
     InvalidToken = "InvalidToken",
+    TokenExpired = "TokenExpiredError",
     UnknownError = "UnknownError"
 }
 
@@ -38,6 +39,9 @@ export class JWTService {
             }
             return decoded as JwtData;
         } catch (error) {
+            if (error instanceof jwt.TokenExpiredError) {
+                return JWTError.TokenExpired;
+            }
             return JWTError.UnknownError;
         }
     }

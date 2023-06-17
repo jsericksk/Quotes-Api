@@ -18,12 +18,20 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
 
     const jwtData = new JWTService().verifyToken(token);
 
-    if (jwtData === JWTError.JWTSecretNotFound || jwtData === JWTError.UnknownError) {
+    if (jwtData === JWTError.JWTSecretNotFound) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error verifying token"));
     }
 
     if (jwtData === JWTError.InvalidToken) {
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid token"));
+    }
+
+    if (jwtData === JWTError.TokenExpired) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Token expired"));
+    }
+
+    if (jwtData === JWTError.UnknownError) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error verifying token"));
     }
 
     req.headers.userId = jwtData.uid.toString();
