@@ -1,3 +1,4 @@
+import { QUOTE_NOT_FOUND } from "../../commom/Constants";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { Quote } from "../../models/Quote";
@@ -37,7 +38,7 @@ export class QuotesService {
 
             if (quote) return quote;
 
-            return new Error("There is no quote with the given id");
+            return new Error(QUOTE_NOT_FOUND);
         } catch (error) {
             return new Error("Unknown error getting quote");
         }
@@ -73,7 +74,7 @@ export class QuotesService {
 
             if (result > 0) return;
 
-            return new Error("There is no quote with the given id");
+            return new Error(QUOTE_NOT_FOUND);
         } catch (error) {
             return new Error("Unknown error updating quote");
         }
@@ -87,7 +88,7 @@ export class QuotesService {
 
             if (result > 0) return;
 
-            return new Error("There is no quote with the given id");
+            return new Error(QUOTE_NOT_FOUND);
         } catch (error) {
             return new Error("Unknown error deleting quote");
         }

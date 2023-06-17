@@ -3,6 +3,7 @@ import { QuotesService } from "../../services/quotes/QuotesService";
 import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
+import { QUOTE_NOT_FOUND } from "../../commom/Constants";
 
 export class QuotesController {
 
@@ -33,6 +34,9 @@ export class QuotesController {
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));
         if (quote instanceof Error) {
+            if (quote.message === QUOTE_NOT_FOUND) {
+                return res.status(StatusCodes.NOT_FOUND).json(simpleError(quote.message));
+            }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
         }
         return res.status(StatusCodes.OK).json(quote);
@@ -58,6 +62,9 @@ export class QuotesController {
         const updatedQuote = req.body as BodyProps;
         const result = await this.quotesService.updateById(Number(req.params.id), updatedQuote);
         if (result instanceof Error) {
+            if (result.message === QUOTE_NOT_FOUND) {
+                return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
+            }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);
@@ -66,6 +73,9 @@ export class QuotesController {
     deleteById = async (req: Request, res: Response): Promise<Response> => {
         const result = await this.quotesService.deleteById(Number(req.params.id));
         if (result instanceof Error) {
+            if (result.message === QUOTE_NOT_FOUND) {
+                return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
+            }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);

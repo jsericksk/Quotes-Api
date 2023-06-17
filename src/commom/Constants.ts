@@ -1,0 +1,1 @@
+export const QUOTE_NOT_FOUND = "There is no quote with the given id";

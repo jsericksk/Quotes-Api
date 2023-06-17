@@ -71,7 +71,7 @@ describe("GetById - Quotes route", () => {
             .set(authorizationHeader)
             .send();
 
-        expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+        expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
         expect(res.body).toHaveProperty("error");
     });
 });
