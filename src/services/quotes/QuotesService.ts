@@ -10,6 +10,7 @@ export class QuotesService {
             const result = await Knex(Table.Quotes)
                 .select("*")
                 .where("quote", "like", `%${filter}%`)
+                .orderBy("publicationDate", "desc")
                 .offset((page - 1) * limit)
                 .limit(limit);
 
