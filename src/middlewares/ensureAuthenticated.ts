@@ -27,7 +27,7 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
     }
 
     if (jwtData === JWTError.TokenExpired) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Token expired"));
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Expired token"));
     }
 
     if (jwtData === JWTError.UnknownError) {
