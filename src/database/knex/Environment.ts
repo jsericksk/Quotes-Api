@@ -15,6 +15,9 @@ export const development: Knex.Config = {
     },
     migrations: {
         directory: path.resolve(__dirname, "..", "migrations"),
+    },
+    seeds: {
+        directory: path.resolve(__dirname, "..", "seeds"),
     }
 };
 
@@ -46,4 +49,7 @@ export const production: Knex.Config = {
     migrations: {
         directory: path.resolve(__dirname, "..", "migrations"),
     },
+    seeds: {
+        directory: path.resolve(__dirname, "..", "seeds"),
+    }
 };
