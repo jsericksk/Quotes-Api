@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
 import { QUOTE_NOT_FOUND } from "../../commom/Constants";
 import { QuoteRoute } from "../../commom/RouteConstants";
+import { Quote } from "../../models/Quote";
 
 export class QuotesController {
 
@@ -75,15 +76,19 @@ export class QuotesController {
             username: req.headers.username as string,
             email: req.headers.email as string
         };
-        const bodyProps = req.body as BodyProps;
-        bodyProps.postedByUserId = authenticatedUserInfo.id;
-        bodyProps.postedByUsername = authenticatedUserInfo.username;
-        const quote = await this.quotesService.create(bodyProps);
-
-        if (quote instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
+        const { quote, author } = req.body;
+        const quoteToCreate: Omit<Quote, "id">  ={
+            quote: quote,
+            author: author,
+            postedByUserId: authenticatedUserInfo.id,
+            postedByUsername: authenticatedUserInfo.username
+        };
+       
+        const createdQuote = await this.quotesService.create(quoteToCreate);
+        if (createdQuote instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(createdQuote.message));
         }
-        return res.status(StatusCodes.CREATED).json(quote);
+        return res.status(StatusCodes.CREATED).json(createdQuote);
     };
 
     updateById = async (req: Request, res: Response): Promise<Response> => {
