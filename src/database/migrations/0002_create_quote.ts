@@ -5,13 +5,12 @@ export async function up(knex: Knex) {
     return knex
         .schema
         .createTable(Table.quote, table => {
-            table.bigIncrements("id").primary().index();
+            table.increments("id").primary().index();
             table.string("quote").notNullable().checkLength(">=", 6);
             table.string("author").notNullable().checkLength(">=", 1);
             table.string("postedByUsername").notNullable();
             table
-                .bigInteger("postedByUserId")
-                .unsigned()
+                .integer("postedByUserId")
                 .references("id")
                 .inTable(Table.user)
                 .onUpdate("CASCADE")
