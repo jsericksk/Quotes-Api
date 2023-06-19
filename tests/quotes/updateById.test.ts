@@ -21,6 +21,18 @@ describe("UpdateById - Quotes route", () => {
         const loginRes = await testServer.post(AuthRoute.login).send(user);
         const accessToken = loginRes.body.accessToken;
         authorizationHeader = { Authorization: `Bearer ${accessToken}` };
+
+        // Create two quotes
+        const quote1: Omit<Quote, "id"> = {
+            quote: "Seja a mudança que você quer ver no mundo.",
+            author: "Mahatma Gandhi",
+        };
+        const quote2: Omit<Quote, "id"> = {
+            quote: "Seja a mudança que você quer ver no mundo.",
+            author: "Mahatma Gandhi",
+        };
+        await testServer.post(QuoteRoute.create).set(authorizationHeader).send(quote1);
+        await testServer.post(QuoteRoute.create).set(authorizationHeader).send(quote2);
     });
 
     it("Should udpate a quote successfully", async () => {
@@ -84,5 +96,44 @@ describe("UpdateById - Quotes route", () => {
 
         expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
         expect(res.body).toHaveProperty("error");
+    });
+
+    it("Should give an error when trying to update a quote that does not belong to the logged-in user", async () => {
+        const user: Omit<User, "id"> = {
+            email: "mary@gmail.com",
+            username: "mary",
+            password: "123456",
+        };
+        await testServer.post(AuthRoute.register).send(user);
+        const loginRes = await testServer.post(AuthRoute.login).send(user);
+        const accessToken = loginRes.body.accessToken;
+        const maryAuthorizationHeader = { Authorization: `Bearer ${accessToken}` };
+        const quoteIdPostedByJohn = 1;
+
+        // Try to update quote posted by user John logged in as user Mary
+        const resUpdateQuoteFromAnotherUser = await testServer
+            .put(QuoteRoute.routeForTests + quoteIdPostedByJohn)
+            .set(maryAuthorizationHeader)
+            .send({ quote: "Frase modificada", author: "John" });
+        expect(resUpdateQuoteFromAnotherUser.statusCode).toEqual(StatusCodes.NOT_FOUND);
+
+        // Quote exists
+        const resGetQuoteById = await testServer
+            .get(QuoteRoute.routeForTests + quoteIdPostedByJohn)
+            .set(maryAuthorizationHeader)
+            .send();
+        expect(resGetQuoteById.statusCode).toEqual(StatusCodes.OK);
+        expect(resGetQuoteById.body).toHaveProperty("quote");
+        expect(resGetQuoteById.body).toHaveProperty("author");
+
+        // User John tries to update the quote and everything works ok
+        const resUpdate = await testServer
+            .put(QuoteRoute.routeForTests + quoteIdPostedByJohn)
+            .set(authorizationHeader)
+            .send({
+                quote: "Frase modificada",
+                author: "John"
+            });
+        expect(resUpdate.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
 });
