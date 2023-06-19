@@ -3,8 +3,10 @@ import { AuthRoute, QuoteRoute } from "../../src/commom/RouteConstants";
 import { User } from "../../src/models/User";
 import { testServer } from "../jest.setup";
 import { Quote } from "../../src/models/Quote";
+import { TestUtils } from "../utils/TestUtils";
 
 describe("UpdateById - Quotes route", () => {
+    const testUtils = new TestUtils();
     let authorizationHeader = {};
     const quote: Omit<Quote, "id"> = {
         quote: "A imaginação é mais importante que o conhecimento.",
@@ -12,27 +14,9 @@ describe("UpdateById - Quotes route", () => {
     };
 
     beforeAll(async () => {
-        const user: Omit<User, "id"> = {
-            email: "john@gmail.com",
-            username: "john",
-            password: "123456",
-        };
-        await testServer.post(AuthRoute.register).send(user);
-        const loginRes = await testServer.post(AuthRoute.login).send(user);
-        const accessToken = loginRes.body.accessToken;
-        authorizationHeader = { Authorization: `Bearer ${accessToken}` };
-
-        // Create two quotes
-        const quote1: Omit<Quote, "id"> = {
-            quote: "Seja a mudança que você quer ver no mundo.",
-            author: "Mahatma Gandhi",
-        };
-        const quote2: Omit<Quote, "id"> = {
-            quote: "Seja a mudança que você quer ver no mundo.",
-            author: "Mahatma Gandhi",
-        };
-        await testServer.post(QuoteRoute.create).set(authorizationHeader).send(quote1);
-        await testServer.post(QuoteRoute.create).set(authorizationHeader).send(quote2);
+        const registeredUserAccessToken = await testUtils.registerUser();
+        authorizationHeader = { Authorization: `Bearer ${registeredUserAccessToken}` };
+        await testUtils.createQuotes(registeredUserAccessToken);
     });
 
     it("Should udpate a quote successfully", async () => {

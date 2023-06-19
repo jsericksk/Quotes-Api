@@ -1,21 +1,16 @@
 import { StatusCodes } from "http-status-codes";
-import { AuthRoute, QuoteRoute } from "../../src/commom/RouteConstants";
-import { User } from "../../src/models/User";
+import { QuoteRoute } from "../../src/commom/RouteConstants";
 import { testServer } from "../jest.setup";
 import { Quote } from "../../src/models/Quote";
+import { TestUtils } from "../utils/TestUtils";
 
 describe("Create - Quotes route", () => {
+    const testUtils = new TestUtils();
     let authorizationHeader = {};
+
     beforeAll(async () => {
-        const user: Omit<User, "id"> = {
-            email: "john@gmail.com",
-            username: "john",
-            password: "123456",
-        };
-        await testServer.post(AuthRoute.register).send(user);
-        const loginRes = await testServer.post(AuthRoute.login).send(user);
-        const accessToken = loginRes.body.accessToken;
-        authorizationHeader = { Authorization: `Bearer ${accessToken}` };
+        const registeredUserAccessToken = await testUtils.registerUser();
+        authorizationHeader = { Authorization: `Bearer ${registeredUserAccessToken}` };
     });
 
     it("Should create a quote successfully", async () => {
@@ -62,7 +57,7 @@ describe("Create - Quotes route", () => {
             quote: "Yeap",
             author: "Unknown"
         };
-        
+
         const res = await testServer
             .post(QuoteRoute.create)
             .set(authorizationHeader)
