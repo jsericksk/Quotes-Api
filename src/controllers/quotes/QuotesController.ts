@@ -77,13 +77,13 @@ export class QuotesController {
             email: req.headers.email as string
         };
         const { quote, author } = req.body;
-        const quoteToCreate: Omit<Quote, "id">  ={
+        const quoteToCreate: Omit<Quote, "id"> = {
             quote: quote,
             author: author,
             postedByUserId: authenticatedUserInfo.id,
             postedByUsername: authenticatedUserInfo.username
         };
-       
+
         const createdQuote = await this.quotesService.create(quoteToCreate);
         if (createdQuote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(createdQuote.message));
@@ -92,7 +92,7 @@ export class QuotesController {
     };
 
     updateById = async (req: Request, res: Response): Promise<Response> => {
-        const quoteId =  Number(req.params.id);
+        const quoteId = Number(req.params.id);
         const loggedInUserId = Number(req.headers.userId);
         const updatedQuote = req.body as BodyProps;
         const result = await this.quotesService.updateById(quoteId, loggedInUserId, updatedQuote);
@@ -107,7 +107,7 @@ export class QuotesController {
     };
 
     deleteById = async (req: Request, res: Response): Promise<Response> => {
-        const quoteId =  Number(req.params.id);
+        const quoteId = Number(req.params.id);
         const loggedInUserId = Number(req.headers.userId);
         const result = await this.quotesService.deleteById(quoteId, loggedInUserId);
 
