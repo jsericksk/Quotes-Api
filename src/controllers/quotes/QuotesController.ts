@@ -79,6 +79,7 @@ export class QuotesController {
         bodyProps.postedByUserId = authenticatedUserInfo.id;
         bodyProps.postedByUsername = authenticatedUserInfo.username;
         const quote = await this.quotesService.create(bodyProps);
+
         if (quote instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
         }
@@ -86,8 +87,11 @@ export class QuotesController {
     };
 
     updateById = async (req: Request, res: Response): Promise<Response> => {
+        const quoteId =  Number(req.params.id);
+        const loggedInUserId = Number(req.headers.userId);
         const updatedQuote = req.body as BodyProps;
-        const result = await this.quotesService.updateById(Number(req.params.id), updatedQuote);
+        const result = await this.quotesService.updateById(quoteId, loggedInUserId, updatedQuote);
+
         if (result instanceof Error) {
             if (result.message === QUOTE_NOT_FOUND) {
                 return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
@@ -98,7 +102,10 @@ export class QuotesController {
     };
 
     deleteById = async (req: Request, res: Response): Promise<Response> => {
-        const result = await this.quotesService.deleteById(Number(req.params.id));
+        const quoteId =  Number(req.params.id);
+        const loggedInUserId = Number(req.headers.userId);
+        const result = await this.quotesService.deleteById(quoteId, loggedInUserId);
+
         if (result instanceof Error) {
             if (result.message === QUOTE_NOT_FOUND) {
                 return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));

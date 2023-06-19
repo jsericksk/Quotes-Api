@@ -3,9 +3,9 @@ import { Table } from "../Table";
 import { Quote } from "../../models/Quote";
 
 export async function seed(knex: Knex) {
-    const hasData = await knex(Table.Quotes).select().first();
+    const hasData = await knex(Table.quote).select().first();
     if (hasData) return;
-    await knex(Table.Quotes).insert(quotes);
+    await knex(Table.quote).insert(quotes);
 }
 
 const quotes: Quote[] = [

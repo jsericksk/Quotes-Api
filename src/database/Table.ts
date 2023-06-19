@@ -1,4 +1,4 @@
 export enum Table {
-    Users = "users",
-    Quotes = "quotes"
+    user = "user",
+    quote = "quote"
 }

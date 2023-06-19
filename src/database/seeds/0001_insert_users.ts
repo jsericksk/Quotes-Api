@@ -3,9 +3,9 @@ import { Table } from "../Table";
 import { User } from "../../models/User";
 
 export async function seed(knex: Knex) {
-    const hasData = await knex(Table.Users).select().first();
+    const hasData = await knex(Table.user).select().first();
     if (hasData) return;
-    await knex(Table.Users).insert(users);
+    await knex(Table.user).insert(users);
 }
 
 const users: User[] = [

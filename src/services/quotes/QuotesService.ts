@@ -7,7 +7,7 @@ export class QuotesService {
 
     async getAll(page: number, limit: number, filter: string): Promise<Quote[] | Error> {
         try {
-            const result = await Knex(Table.Quotes)
+            const result = await Knex(Table.quote)
                 .select("*")
                 .where("quote", "like", `%${filter}%`)
                 .orderBy("publicationDate", "desc")
@@ -22,9 +22,9 @@ export class QuotesService {
 
     async getById(id: number): Promise<Quote | Error> {
         try {
-            const quote = await Knex(Table.Quotes)
+            const quote = await Knex(Table.quote)
                 .select("*")
-                .where("id", "=", id)
+                .where("id", id)
                 .first();
 
             if (quote) return quote;
@@ -37,12 +37,7 @@ export class QuotesService {
 
     async create(quote: Omit<Quote, "id">): Promise<number | Error> {
         try {
-            const quoteToCreate: Omit<Quote, "id"> = {
-                ...quote,
-                publicationDate: new Date()
-            };
-
-            const [result] = await Knex(Table.Quotes).insert(quoteToCreate).returning("id");
+            const [result] = await Knex(Table.quote).insert(quote).returning("id");
 
             if (typeof result === "object") {
                 return result.id;
@@ -57,11 +52,16 @@ export class QuotesService {
         }
     }
 
-    async updateById(id: number, quote: Omit<Quote, "id">): Promise<void | Error> {
+    async updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void | Error> {
         try {
-            const result = await Knex(Table.Quotes)
+            const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
+            if (!isQuoteOwnedByLoggedInUser) {
+                return new Error(QUOTE_NOT_FOUND);
+            }
+
+            const result = await Knex(Table.quote)
                 .update(quote)
-                .where("id", id);
+                .where("id", quoteId);
 
             if (result > 0) return;
 
@@ -71,10 +71,15 @@ export class QuotesService {
         }
     }
 
-    async deleteById(id: number): Promise<void | Error> {
+    async deleteById(quoteId: number, loggedInUserId: number): Promise<void | Error> {
         try {
-            const result = await Knex(Table.Quotes)
-                .where("id", id)
+            const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
+            if (!isQuoteOwnedByLoggedInUser) {
+                return new Error(QUOTE_NOT_FOUND);
+            }
+
+            const result = await Knex(Table.quote)
+                .where("id", quoteId)
                 .del();
 
             if (result > 0) return;
@@ -85,9 +90,17 @@ export class QuotesService {
         }
     }
 
+    private async isQuoteOwnedByLoggedInUser(quoteId: number, loggedInUserId: number): Promise<boolean> {
+        const quoteFound = await this.getById(quoteId);
+        if (!(quoteFound instanceof Error)) {
+            return quoteFound.postedByUserId === loggedInUserId;
+        }
+        return false;
+    }
+
     async count(filter = ""): Promise<number | Error> {
         try {
-            const [{ count }] = await Knex(Table.Quotes)
+            const [{ count }] = await Knex(Table.quote)
                 .where("quote", "like", `%${filter}%`)
                 .count<[{ count: number }]>("* as count");
 

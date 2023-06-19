@@ -14,7 +14,7 @@ export class UserAuthService {
 
             const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
             user.password = hashedPassword;
-            const [result] = await Knex(Table.Users).insert(user).returning("id");
+            const [result] = await Knex(Table.user).insert(user).returning("id");
 
             if (typeof result === "object") {
                 return result.id;
@@ -30,7 +30,7 @@ export class UserAuthService {
 
     async getUserByEmail(email: string): Promise<User | Error> {
         try {
-            const result = await Knex(Table.Users)
+            const result = await Knex(Table.user)
                 .select("*")
                 .where("email", "=", email)
                 .first();
