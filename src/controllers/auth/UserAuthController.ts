@@ -36,10 +36,14 @@ export class UserAuthController {
                 email: user.email
             };
             const accessToken = new JWTService().generateAccessToken(jwtData);
+            const refreshToken = new JWTService().generateAccessToken(jwtData);
             if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
             }
-            return res.status(StatusCodes.OK).json({ accessToken });
+            if (refreshToken === JWTError.JWTSecretNotFound || refreshToken === JWTError.UnknownError) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating refresh token"));
+            }
+            return res.status(StatusCodes.OK).json({ access_token: accessToken, refresh_token: refreshToken });
         }
 
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
