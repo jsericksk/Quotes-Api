@@ -1,6 +1,7 @@
 export const AuthRoute = {
     register: "/auth/register",
     login: "/auth/login",
+    refreshToken: "/auth/refresh-token"
 };
 
 export const QuoteRoute = {
