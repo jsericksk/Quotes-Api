@@ -16,7 +16,7 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Unauthorized"));
     }
 
-    const jwtData = new JWTService().verifyToken(token);
+    const jwtData = new JWTService().verifyAccessToken(token);
 
     if (jwtData === JWTError.JWTSecretNotFound) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error verifying token"));

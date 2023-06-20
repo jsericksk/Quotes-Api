@@ -4,7 +4,9 @@ import "dotenv/config";
 export interface JwtData {
     uid: number,
     username: string,
-    email: string
+    email: string,
+    iat?: number,
+    exp?: number
 }
 
 export enum JWTError {
@@ -15,24 +17,42 @@ export enum JWTError {
 }
 
 export class JWTService {
-    private secretKey = process.env.JWT_SECRET;
-    
-    generateToken(jwtData: JwtData): string | JWTError {
-        if (!this.secretKey) {
+    private accessTokenSecretKey = process.env.ACCESS_TOKEN_SECRET_KEY;
+    private refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET_KEY;
+
+    generateAccessToken(jwtData: JwtData): string | JWTError {
+        if (!this.accessTokenSecretKey) {
             return JWTError.JWTSecretNotFound;
         }
-
-        const token = jwt.sign(jwtData, this.secretKey, { expiresIn: "24h" });
+        const token = jwt.sign(jwtData, this.accessTokenSecretKey, { expiresIn: "24h" });
         return token;
     }
 
-    verifyToken(token: string): JwtData | JWTError {
-        if (!this.secretKey) {
+    verifyAccessToken(token: string): JwtData | JWTError {
+        if (!this.accessTokenSecretKey) {
             return JWTError.JWTSecretNotFound;
         }
+        return this.getTokenOrError(token, this.accessTokenSecretKey);
+    }
 
+    generateRefreshToken(jwtData: JwtData): string | JWTError {
+        if (!this.refreshTokenSecretKey) {
+            return JWTError.JWTSecretNotFound;
+        }
+        const token = jwt.sign(jwtData, this.refreshTokenSecretKey, { expiresIn: "7d" });
+        return token;
+    }
+
+    verifyRefreshToken(token: string): JwtData | JWTError {
+        if (!this.refreshTokenSecretKey) {
+            return JWTError.JWTSecretNotFound;
+        }
+        return this.getTokenOrError(token, this.refreshTokenSecretKey);
+    }
+
+    private getTokenOrError(token: string, secretKey: string): JwtData | JWTError {
         try {
-            const decoded = jwt.verify(token, this.secretKey);
+            const decoded = jwt.verify(token, secretKey);
             if (typeof decoded === "string") {
                 return JWTError.InvalidToken;
             }
