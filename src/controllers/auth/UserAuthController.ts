@@ -35,7 +35,7 @@ export class UserAuthController {
                 username: user.username,
                 email: user.email
             };
-            const accessToken = new JWTService().generateToken(jwtData);
+            const accessToken = new JWTService().generateAccessToken(jwtData);
             if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
             }
