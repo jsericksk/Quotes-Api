@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { JWTService } from "../services/auth/JWTService";
+import { JWTService } from "../services/auth/utils/JWTService";
 import { simpleError } from "../errors/simpleError";
 
 export async function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {

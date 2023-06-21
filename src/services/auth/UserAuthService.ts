@@ -2,8 +2,8 @@ import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { RefreshToken } from "../../models/RefreshToken";
 import { User } from "../../models/User";
-import { JWTService, JwtData } from "./JWTService";
-import { PasswordCrypto } from "./PasswordCrypto";
+import { JWTService, JwtData } from "./utils/JWTService";
+import { PasswordCrypto } from "./utils/PasswordCrypto";
 import { v4 as uuidv4 } from "uuid";
 
 export class UserAuthService {

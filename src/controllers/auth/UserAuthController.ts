@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { JWTService, JwtData } from "../../services/auth/JWTService";
-import { PasswordCrypto } from "../../services/auth/PasswordCrypto";
+import { JWTService, JwtData } from "../../services/auth/utils/JWTService";
+import { PasswordCrypto } from "../../services/auth/utils/PasswordCrypto";
 import { User } from "../../models/User";
 import { UserAuthService } from "../../services/auth/UserAuthService";
 

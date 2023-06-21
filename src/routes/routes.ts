@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
-import { JWTService } from "../services/auth/JWTService";
+import { JWTService } from "../services/auth/utils/JWTService";
 import { AuthRoute, QuoteRoute } from "../commom/RouteConstants";
 import { UserAuthController } from "../controllers/auth/UserAuthController";
 import { UserAuthRequestValidation } from "../controllers/auth/UserAuthRequesValidation";
