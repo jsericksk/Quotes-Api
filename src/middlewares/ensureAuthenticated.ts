@@ -19,7 +19,7 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
     const jwtData = new JWTService().verifyAccessToken(token);
 
     if (jwtData === JWTError.JWTSecretNotFound) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error verifying token"));
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Token secret key not found"));
     }
 
     if (jwtData === JWTError.InvalidToken) {

@@ -35,14 +35,18 @@ export class UserAuthController {
                 username: user.username,
                 email: user.email
             };
-            const accessToken = new JWTService().generateAccessToken(jwtData);
-            const refreshToken = new JWTService().generateAccessToken(jwtData);
+            const jwtSwtService = new JWTService();
+            const accessToken = jwtSwtService.generateAccessToken(jwtData);
+            const refreshToken = jwtSwtService.generateRefreshToken(jwtData);
+
             if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
             }
             if (refreshToken === JWTError.JWTSecretNotFound || refreshToken === JWTError.UnknownError) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating refresh token"));
             }
+            
+            await this.userAuthService.saveOrUpdateUserRefreshToken(user.id, refreshToken);
             return res.status(StatusCodes.OK).json({ access_token: accessToken, refresh_token: refreshToken });
         }
 
