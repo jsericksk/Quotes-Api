@@ -47,7 +47,7 @@ export class UserAuthController {
             }
             
             await this.userAuthService.saveOrUpdateUserRefreshToken(user.id, refreshToken);
-            return res.status(StatusCodes.OK).json({ access_token: accessToken, refresh_token: refreshToken });
+            return res.status(StatusCodes.OK).json({ accessToken: accessToken, refreshToken: refreshToken });
         }
 
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
