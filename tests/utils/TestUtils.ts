@@ -1,4 +1,4 @@
-import { AuthRoute, QuoteRoute } from "../../src/commom/RouteConstants";
+import { AuthRoute } from "../../src/commom/RouteConstants";
 import { User } from "../../src/models/User";
 import { testServer } from "../jest.setup";
 
