@@ -4,8 +4,8 @@ import { User } from "../../../models/User";
 
 declare module "knex/types/tables" {
     interface Tables {
-        user: User
-        quote: Quote
-        refreshToken: RefreshToken
+        users: User
+        quotes: Quote
+        refreshTokens: RefreshToken
     }
 }

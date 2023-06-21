@@ -5,27 +5,27 @@ import { v4 as uuidv4 } from "uuid";
 export async function up(knex: Knex) {
     return knex
         .schema
-        .createTable(Table.refreshToken, table => {
+        .createTable(Table.refreshTokens, table => {
             table.uuid("id").primary().defaultTo(uuidv4());
             table.string("refreshToken").notNullable();
             table
                 .integer("userId")
                 .index()
                 .references("id")
-                .inTable(Table.user)
+                .inTable(Table.users)
                 .onUpdate("CASCADE")
                 .onDelete("CASCADE");
         })
         .then(() => {
-            console.log(`# Created table ${Table.refreshToken}`);
+            console.log(`# Created table ${Table.refreshTokens}`);
         });
 }
 
 export async function down(knex: Knex) {
     return knex
         .schema
-        .dropTable(Table.refreshToken)
+        .dropTableIfExists(Table.refreshTokens)
         .then(() => {
-            console.log(`# Dropped table ${Table.refreshToken}`);
+            console.log(`# Dropped table ${Table.refreshTokens}`);
         });
 }

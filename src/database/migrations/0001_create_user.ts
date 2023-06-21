@@ -4,22 +4,22 @@ import { Table } from "../Table";
 export async function up(knex: Knex) {
     return knex
         .schema
-        .createTable(Table.user, table => {
+        .createTable(Table.users, table => {
             table.increments("id").primary().index();
             table.string("email").index().notNullable().unique().checkLength(">=", 6);
             table.string("username").notNullable().checkLength(">=", 3);
             table.string("password").notNullable().checkLength(">=", 6);
         })
         .then(() => {
-            console.log(`# Created table ${Table.user}`);
+            console.log(`# Created table ${Table.users}`);
         });
 }
 
 export async function down(knex: Knex) {
     return knex
         .schema
-        .dropTable(Table.user)
+        .dropTableIfExists(Table.users)
         .then(() => {
-            console.log(`# Dropped table ${Table.user}`);
+            console.log(`# Dropped table ${Table.users}`);
         });
 }

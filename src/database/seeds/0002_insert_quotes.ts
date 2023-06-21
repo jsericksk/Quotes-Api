@@ -3,11 +3,11 @@ import { Table } from "../Table";
 import { Quote } from "../../models/Quote";
 
 export async function seed(knex: Knex) {
-    const hasData = await knex(Table.quote).select().first();
+    const hasData = await knex(Table.quotes).select().first();
     if (hasData) return;
 
     const quotesWithoutId = quotes.map(({ id, ...quote }) => quote);
-    await knex(Table.quote).insert(quotesWithoutId);
+    await knex(Table.quotes).insert(quotesWithoutId);
 }
 
 const quotes: Quote[] = [

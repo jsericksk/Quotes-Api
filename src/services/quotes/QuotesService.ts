@@ -7,7 +7,7 @@ export class QuotesService {
 
     async getAll(page: number, limit: number, filter: string): Promise<Quote[] | Error> {
         try {
-            const result = await Knex(Table.quote)
+            const result = await Knex(Table.quotes)
                 .select("*")
                 .where("quote", "like", `%${filter}%`)
                 .orderBy("publicationDate", "desc")
@@ -22,7 +22,7 @@ export class QuotesService {
 
     async getById(id: number): Promise<Quote | Error> {
         try {
-            const quote = await Knex(Table.quote)
+            const quote = await Knex(Table.quotes)
                 .select("*")
                 .where("id", id)
                 .first();
@@ -37,7 +37,7 @@ export class QuotesService {
 
     async create(quote: Omit<Quote, "id">): Promise<number | Error> {
         try {
-            const [result] = await Knex(Table.quote).insert(quote).returning("id");
+            const [result] = await Knex(Table.quotes).insert(quote).returning("id");
 
             if (typeof result === "object") {
                 return result.id;
@@ -59,7 +59,7 @@ export class QuotesService {
                 return new Error(QUOTE_NOT_FOUND);
             }
 
-            const result = await Knex(Table.quote)
+            const result = await Knex(Table.quotes)
                 .update(quote)
                 .where("id", quoteId);
 
@@ -78,7 +78,7 @@ export class QuotesService {
                 return new Error(QUOTE_NOT_FOUND);
             }
 
-            const result = await Knex(Table.quote)
+            const result = await Knex(Table.quotes)
                 .where("id", quoteId)
                 .del();
 
@@ -100,7 +100,7 @@ export class QuotesService {
 
     async count(filter = ""): Promise<number | Error> {
         try {
-            const [{ count }] = await Knex(Table.quote)
+            const [{ count }] = await Knex(Table.quotes)
                 .where("quote", "like", `%${filter}%`)
                 .count<[{ count: number }]>("* as count");
 

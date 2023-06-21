@@ -16,7 +16,7 @@ export class UserAuthService {
 
             const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
             user.password = hashedPassword;
-            const [result] = await Knex(Table.user).insert(user).returning("id");
+            const [result] = await Knex(Table.users).insert(user).returning("id");
 
             if (typeof result === "object") {
                 return result.id;
@@ -26,13 +26,14 @@ export class UserAuthService {
 
             return new Error("Error registering user");
         } catch (error) {
+            console.log("Erro ao registrar: " + error);
             return new Error("Unknown error when registering the user");
         }
     }
 
     async getUserByEmail(email: string): Promise<User | Error> {
         try {
-            const result = await Knex(Table.user)
+            const result = await Knex(Table.users)
                 .select("*")
                 .where("email", "=", email)
                 .first();
@@ -52,7 +53,7 @@ export class UserAuthService {
             return new Error(jwtDataOrError.message);
         }
         const userId = jwtDataOrError.uid;
-        const existingRefreshToken = await Knex(Table.refreshToken)
+        const existingRefreshToken = await Knex(Table.refreshTokens)
             .select("*")
             .where("userId", userId)
             .first();
@@ -77,7 +78,7 @@ export class UserAuthService {
             refreshToken: newRefreshToken,
             userId: userId
         };
-        const updateResult = await Knex(Table.refreshToken)
+        const updateResult = await Knex(Table.refreshTokens)
             .where("userId", userId)
             .update(updatedRefreshToken);
         if (updateResult > 0) {
@@ -88,7 +89,7 @@ export class UserAuthService {
 
     async saveOrUpdateUserRefreshToken(userId: number, refreshToken: string): Promise<void | Error> {
         try {
-            const existingRefreshToken = await Knex(Table.refreshToken)
+            const existingRefreshToken = await Knex(Table.refreshTokens)
                 .select("*")
                 .where("userId", userId)
                 .first();
@@ -98,15 +99,16 @@ export class UserAuthService {
                     refreshToken: refreshToken,
                     userId: userId
                 };
-                await Knex(Table.refreshToken)
+                await Knex(Table.refreshTokens)
                     .where("userId", userId)
                     .update(updatedRefreshtoken);
             } else {
+                console.log("Chegou aqui");
                 const newRefreshToken: Omit<RefreshToken, "id"> = {
                     refreshToken: refreshToken,
                     userId: userId
                 };
-                await Knex(Table.refreshToken).insert(newRefreshToken);
+                await Knex(Table.refreshTokens).insert(newRefreshToken);
             }
         } catch (error) {
             console.log("Error saving refresh token: " + error);
