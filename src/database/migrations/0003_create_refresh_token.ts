@@ -1,12 +1,12 @@
 import { Knex } from "knex";
 import { Table } from "../Table";
+import { v4 as uuidv4 } from "uuid";
 
 export async function up(knex: Knex) {
-    await knex.raw("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
     return knex
         .schema
         .createTable(Table.refreshToken, table => {
-            table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
+            table.uuid("id").primary().defaultTo(uuidv4());
             table.string("refreshToken").notNullable();
             table
                 .integer("userId")
