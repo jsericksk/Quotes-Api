@@ -1,12 +1,11 @@
 import { Knex } from "knex";
 import { Table } from "../Table";
-import { v4 as uuidv4 } from "uuid";
 
 export async function up(knex: Knex) {
     return knex
         .schema
         .createTable(Table.refreshTokens, table => {
-            table.uuid("id").primary().defaultTo(uuidv4());
+            table.uuid("id").primary();
             table.string("refreshToken").notNullable();
             table
                 .integer("userId")

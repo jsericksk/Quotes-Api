@@ -4,6 +4,7 @@ import { RefreshToken } from "../../models/RefreshToken";
 import { User } from "../../models/User";
 import { JWTService, JwtData } from "./JWTService";
 import { PasswordCrypto } from "./PasswordCrypto";
+import { v4 as uuidv4 } from "uuid";
 
 export class UserAuthService {
 
@@ -104,7 +105,8 @@ export class UserAuthService {
                     .update(updatedRefreshtoken);
             } else {
                 console.log("Chegou aqui");
-                const newRefreshToken: Omit<RefreshToken, "id"> = {
+                const newRefreshToken: RefreshToken = {
+                    id: uuidv4(),
                     refreshToken: refreshToken,
                     userId: userId
                 };

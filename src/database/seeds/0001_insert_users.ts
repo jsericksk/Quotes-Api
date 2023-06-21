@@ -23,5 +23,5 @@ const users: Omit<User, "id">[] = [
         email: "test_user3@gmail.com",
         username: "Mary - Test",
         password: "$2a$10$S2i3RTQBQn0ti3RX.phoueL.bRKtlS5RT1cIIH4mV6./R9pm5umqe"
-    },
+    }
 ];
