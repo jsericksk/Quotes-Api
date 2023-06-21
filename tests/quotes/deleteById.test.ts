@@ -8,11 +8,21 @@ import { TestUtils } from "../utils/TestUtils";
 describe("DeleteById - Quotes route", () => {
     const testUtils = new TestUtils();
     let authorizationHeader = {};
+    let quoteIdPostedByJohn: number;
 
     beforeAll(async () => {
         const registeredUserAccessToken = await testUtils.registerUser();
         authorizationHeader = { Authorization: `Bearer ${registeredUserAccessToken}` };
-        await testUtils.createQuotes(registeredUserAccessToken);
+
+        const quote: Omit<Quote, "id"> = {
+            quote: "A imaginação é mais importante que o conhecimento.",
+            author: "Albert Einstein"
+        };
+        const resCreate = await testServer
+            .post(QuoteRoute.create)
+            .set(authorizationHeader)
+            .send(quote);
+        quoteIdPostedByJohn = resCreate.body;
     });
 
     it("Should delete a quote successfully", async () => {
@@ -76,7 +86,6 @@ describe("DeleteById - Quotes route", () => {
         const resLogin = await testServer.post(AuthRoute.login).send(user);
         const accessToken = resLogin.body.accessToken;
         const maryAuthorizationHeader = { Authorization: `Bearer ${accessToken}` };
-        const quoteIdPostedByJohn = 1;
 
         // Try to delete quote posted by user John logged in as user Mary
         const resDeleteQuoteFromAnotherUser = await testServer

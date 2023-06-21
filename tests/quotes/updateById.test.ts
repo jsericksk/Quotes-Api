@@ -8,6 +8,7 @@ import { TestUtils } from "../utils/TestUtils";
 describe("UpdateById - Quotes route", () => {
     const testUtils = new TestUtils();
     let authorizationHeader = {};
+    let quoteIdPostedByJohn: number;
     const quote: Omit<Quote, "id"> = {
         quote: "A imaginação é mais importante que o conhecimento.",
         author: "Albert Einstein"
@@ -16,7 +17,12 @@ describe("UpdateById - Quotes route", () => {
     beforeAll(async () => {
         const registeredUserAccessToken = await testUtils.registerUser();
         authorizationHeader = { Authorization: `Bearer ${registeredUserAccessToken}` };
-        await testUtils.createQuotes(registeredUserAccessToken);
+
+        const resCreate = await testServer
+            .post(QuoteRoute.create)
+            .set(authorizationHeader)
+            .send(quote);
+        quoteIdPostedByJohn = resCreate.body;
     });
 
     it("Should udpate a quote successfully", async () => {
@@ -92,7 +98,6 @@ describe("UpdateById - Quotes route", () => {
         const loginRes = await testServer.post(AuthRoute.login).send(user);
         const accessToken = loginRes.body.accessToken;
         const maryAuthorizationHeader = { Authorization: `Bearer ${accessToken}` };
-        const quoteIdPostedByJohn = 1;
 
         // Try to update quote posted by user John logged in as user Mary
         const resUpdateQuoteFromAnotherUser = await testServer
@@ -114,10 +119,7 @@ describe("UpdateById - Quotes route", () => {
         const resUpdate = await testServer
             .put(QuoteRoute.routeForTests + quoteIdPostedByJohn)
             .set(authorizationHeader)
-            .send({
-                quote: "Frase modificada",
-                author: "John"
-            });
+            .send({ quote: "Frase modificada", author: "John" });
         expect(resUpdate.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
 });
