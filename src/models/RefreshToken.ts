@@ -1,4 +1,5 @@
 export interface RefreshToken {
-    id: number,
-    refreshToken: string
+    id: string,
+    refreshToken: string,
+    userId: number
 }

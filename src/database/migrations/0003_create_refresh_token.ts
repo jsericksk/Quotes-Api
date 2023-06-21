@@ -5,8 +5,14 @@ export async function up(knex: Knex) {
     return knex
         .schema
         .createTable(Table.refreshToken, table => {
-            table.integer("id").primary().index();
+            table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
             table.string("refreshToken").notNullable();
+            table
+                .integer("userId")
+                .references("id")
+                .inTable(Table.user)
+                .onUpdate("CASCADE")
+                .onDelete("CASCADE");
         })
         .then(() => {
             console.log(`# Created table ${Table.refreshToken}`);
