@@ -12,22 +12,18 @@ export class UserAuthController {
 
     register = async (req: Request, res: Response): Promise<Response> => {
         const user = await this.userAuthService.register(req.body);
-
         if (user instanceof Error) {
             return res.status(500).json(simpleError(user.message));
         }
-
         return res.status(StatusCodes.CREATED).json(user);
     };
 
     login = async (req: Request, res: Response): Promise<Response> => {
         const credentials = req.body as Omit<User, "id" | "username">;
-
         const user = await this.userAuthService.getUserByEmail(credentials.email);
         if (user instanceof Error) {
             return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
         }
-
         const passwordMatch = await new PasswordCrypto().verifyPassword(credentials.password, user.password);
         if (passwordMatch) {
             const jwtData: JwtData = {

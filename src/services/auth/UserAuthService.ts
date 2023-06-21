@@ -83,7 +83,6 @@ export class UserAuthService {
         if (updateResult > 0) {
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
         }
-
         return new Error("Unknown error generating tokens");
     }
 
