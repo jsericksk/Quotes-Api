@@ -15,7 +15,7 @@ const userAuthRequestValidation = new UserAuthRequestValidation();
 const userAuthController = new UserAuthController(new UserAuthService());
 router.post(AuthRoute.register, userAuthRequestValidation.validateRegister, userAuthController.register);
 router.post(AuthRoute.login, userAuthRequestValidation.validateLogin, userAuthController.login);
-router.post(AuthRoute.refreshToken, userAuthRequestValidation.validateRefreshToken, userAuthController.login);
+router.post(AuthRoute.refreshToken, userAuthRequestValidation.validateRefreshToken, userAuthController.generateRefreshToken);
 
 const quotesRequestValidation = new QuotesRequestValidation();
 const quotesController = new QuotesController(new QuotesService());
