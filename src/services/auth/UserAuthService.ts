@@ -100,11 +100,8 @@ export class UserAuthService {
                     refreshToken: refreshToken,
                     userId: userId
                 };
-                await Knex(Table.refreshTokens)
-                    .where("userId", userId)
-                    .update(updatedRefreshtoken);
+                await Knex(Table.refreshTokens).where("userId", userId).update(updatedRefreshtoken);
             } else {
-                console.log("Chegou aqui");
                 const newRefreshToken: RefreshToken = {
                     id: uuidv4(),
                     refreshToken: refreshToken,
@@ -113,7 +110,6 @@ export class UserAuthService {
                 await Knex(Table.refreshTokens).insert(newRefreshToken);
             }
         } catch (error) {
-            console.log("Error saving refresh token: " + error);
             return new Error("Unknown error saving refresh token");
         }
     }
