@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { testServer } from "../jest.setup";
-import { AuthRoute } from "../../src/commom/RouteConstants";
-import { User } from "../../src/models/User";
+import { testServer } from "../../jest.setup";
+import { AuthRoute } from "../../../src/commom/RouteConstants";
+import { User } from "../../../src/models/User";
 
 const user: Omit<User, "id"> = {
     email: "john@gmail.com",
@@ -10,7 +10,7 @@ const user: Omit<User, "id"> = {
 };
 
 describe(
-    "Login", () => {
+    "Login - User auth route", () => {
         beforeAll(async () => {
             await testServer.post(AuthRoute.register).send(user);
         });

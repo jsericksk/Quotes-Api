@@ -1,10 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import { testServer } from "../jest.setup";
-import { AuthRoute } from "../../src/commom/RouteConstants";
-import { User } from "../../src/models/User";
+import { testServer } from "../../jest.setup";
+import { AuthRoute } from "../../../src/commom/RouteConstants";
+import { User } from "../../../src/models/User";
 
 describe(
-    "Register User", () => {
+    "Register - User auth route", () => {
         it("Should successfully register the user", async () => {
             const user: Omit<User, "id"> = {
                 email: "john@gmail.com",
