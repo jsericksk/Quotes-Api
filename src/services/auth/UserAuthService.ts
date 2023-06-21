@@ -2,7 +2,7 @@ import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { RefreshToken } from "../../models/RefreshToken";
 import { User } from "../../models/User";
-import { JWTError, JWTService, JwtData } from "./JWTService";
+import { JWTService, JwtData } from "./JWTService";
 import { PasswordCrypto } from "./PasswordCrypto";
 
 export class UserAuthService {
@@ -48,19 +48,9 @@ export class UserAuthService {
     async generateAccessToken(refreshToken: string): Promise<object | Error> {
         const jwtService = new JWTService();
         const jwtDataOrError = jwtService.verifyRefreshToken(refreshToken);
-        if (jwtDataOrError === JWTError.JWTSecretNotFound) {
-            return new Error("Token secret key not found");
+        if (jwtDataOrError instanceof Error) {
+            return new Error(jwtDataOrError.message);
         }
-        if (jwtDataOrError === JWTError.InvalidToken) {
-            return new Error("Invalid refresh token");
-        }
-        if (jwtDataOrError === JWTError.TokenExpired) {
-            return new Error("Refresh token expired");
-        }
-        if (jwtDataOrError === JWTError.UnknownError) {
-            return new Error("Error verifying refresh token");
-        }
-
         const userId = jwtDataOrError.uid;
         const existingRefreshToken = await Knex(Table.refreshToken)
             .select("*")
@@ -78,6 +68,10 @@ export class UserAuthService {
         const newAccessToken = jwtService.generateAccessToken(newJwtData);
         const newRefreshToken = jwtService.generateRefreshToken(newJwtData);
 
+        if (newAccessToken instanceof Error || newRefreshToken instanceof Error) {
+            return new Error("Error generating tokens");
+        }
+
         const updatedRefreshToken: RefreshToken = {
             id: existingRefreshToken.id,
             refreshToken: newRefreshToken,
@@ -90,7 +84,7 @@ export class UserAuthService {
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
         }
 
-        return new Error("Error generating refresh token");
+        return new Error("Unknown error generating tokens");
     }
 
     async saveOrUpdateUserRefreshToken(userId: number, refreshToken: string): Promise<void | Error> {

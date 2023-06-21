@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { JWTError, JWTService } from "../services/auth/JWTService";
+import { JWTService } from "../services/auth/JWTService";
 import { simpleError } from "../errors/simpleError";
 
 export async function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
@@ -16,27 +16,14 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Unauthorized"));
     }
 
-    const jwtData = new JWTService().verifyAccessToken(token);
-
-    if (jwtData === JWTError.JWTSecretNotFound) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Token secret key not found"));
+    const jwtDataOrError = new JWTService().verifyAccessToken(token);
+    if (jwtDataOrError instanceof Error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(jwtDataOrError.message));
     }
 
-    if (jwtData === JWTError.InvalidToken) {
-        return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid token"));
-    }
-
-    if (jwtData === JWTError.TokenExpired) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Expired token"));
-    }
-
-    if (jwtData === JWTError.UnknownError) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error verifying token"));
-    }
-
-    req.headers.userId = jwtData.uid.toString();
-    req.headers.username = jwtData.username;
-    req.headers.email = jwtData.email;
+    req.headers.userId = jwtDataOrError.uid.toString();
+    req.headers.username = jwtDataOrError.username;
+    req.headers.email = jwtDataOrError.email;
 
     return next();
 }

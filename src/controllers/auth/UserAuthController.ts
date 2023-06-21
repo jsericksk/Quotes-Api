@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { JWTService, JWTError, JwtData } from "../../services/auth/JWTService";
+import { JWTService, JwtData } from "../../services/auth/JWTService";
 import { PasswordCrypto } from "../../services/auth/PasswordCrypto";
 import { User } from "../../models/User";
 import { UserAuthService } from "../../services/auth/UserAuthService";
@@ -39,13 +39,17 @@ export class UserAuthController {
             const accessToken = jwtSwtService.generateAccessToken(jwtData);
             const refreshToken = jwtSwtService.generateRefreshToken(jwtData);
 
-            if (accessToken === JWTError.JWTSecretNotFound || accessToken === JWTError.UnknownError) {
-                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating access token"));
+            if (accessToken instanceof Error) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
+                    simpleError("Error generating access token: " + accessToken.message)
+                );
             }
-            if (refreshToken === JWTError.JWTSecretNotFound || refreshToken === JWTError.UnknownError) {
-                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError("Error generating refresh token"));
+            if (refreshToken instanceof Error) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
+                    simpleError("Error generating refresh token: " + refreshToken.message)
+                );
             }
-            
+
             await this.userAuthService.saveOrUpdateUserRefreshToken(user.id, refreshToken);
             return res.status(StatusCodes.OK).json({ accessToken: accessToken, refreshToken: refreshToken });
         }
@@ -53,12 +57,12 @@ export class UserAuthController {
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
     };
 
-    generateRefreshToken = async (req: Request, res: Response): Promise<Response> => { 
+    generateRefreshToken = async (req: Request, res: Response): Promise<Response> => {
         const { refreshToken } = req.body;
         const result = await this.userAuthService.generateAccessToken(refreshToken);
         if (result instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message)); 
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         }
-        return res.status(StatusCodes.OK).json(result); 
+        return res.status(StatusCodes.OK).json(result);
     };
 }
