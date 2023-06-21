@@ -73,7 +73,7 @@ export class UserAuthService {
         if (updatedRefreshTokenResult > 0) {
             const newAccessToken = jwtService.generateAccessToken(jwtDataOrError);
             const newRefreshToken = jwtService.generateRefreshToken(jwtDataOrError);
-            return { access_token: newAccessToken, refresh_token: newRefreshToken };
+            return { accessToken: newAccessToken, refreshToken: newRefreshToken };
         }
 
         return new Error("Error generating refresh token");
@@ -88,8 +88,8 @@ export class UserAuthService {
                     .update({ refreshToken });
             } else {
                 const newRefreshToken: Omit<RefreshToken, "id"> = {
-                    userId: userId, 
-                    refreshToken: refreshToken
+                    refreshToken: refreshToken,
+                    userId: userId
                 };
                 await Knex(Table.refreshToken).insert(newRefreshToken);
             }

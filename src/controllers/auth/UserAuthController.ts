@@ -52,4 +52,13 @@ export class UserAuthController {
 
         return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
     };
+
+    generateRefreshToken = async (req: Request, res: Response): Promise<Response> => { 
+        const { refreshToken } = req.body;
+        const result = this.userAuthService.generateAccessToken(refreshToken);
+        if (result instanceof Error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message)); 
+        }
+        return res.status(StatusCodes.UNAUTHORIZED).json(result); 
+    };
 }

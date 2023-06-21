@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { zodValidation } from "../../middlewares/zodValidation";
 import { User } from "../../models/User";
+import { RefreshToken } from "../../models/RefreshToken";
 
 export class UserAuthRequestValidation {
 
@@ -19,6 +20,14 @@ export class UserAuthRequestValidation {
             z.object({
                 email: z.string().email().min(6),
                 password: z.string().min(6),
+            })
+        ),
+    }));
+
+    validateRefreshToken = zodValidation((customSchema) => ({
+        body: customSchema<Omit<RefreshToken, "id" | "userId">>(
+            z.object({
+                refreshToken: z.string(),
             })
         ),
     }));
