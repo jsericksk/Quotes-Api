@@ -3,14 +3,14 @@ import { testServer } from "../../jest.setup";
 import { AuthRoute } from "../../../src/commom/RouteConstants";
 import { User } from "../../../src/models/User";
 
-const user: Omit<User, "id"> = {
-    email: "john@gmail.com",
-    username: "john",
-    password: "123456",
-};
-
 describe(
     "Login - User auth route", () => {
+        const user: Omit<User, "id"> = {
+            email: "john@gmail.com",
+            username: "john",
+            password: "123456",
+        };
+
         beforeAll(async () => {
             await testServer.post(AuthRoute.register).send(user);
         });

@@ -5,7 +5,6 @@ import { Knex } from "../src/database/knex/Knex";
 
 beforeAll(async () => {
     await Knex.migrate.latest();
-    // await Knex.seed.run();
 });
 
 afterAll(async () => {
