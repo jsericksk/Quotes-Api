@@ -62,17 +62,31 @@ export class UserAuthService {
         }
 
         const userId = jwtDataOrError.uid;
-        const existingRefreshToken = await this.getRefreshToken(userId);
-        if (existingRefreshToken instanceof Error || existingRefreshToken.refreshToken !== refreshToken) {
+        const existingRefreshToken = await Knex(Table.refreshToken)
+            .select("*")
+            .where("userId", userId)
+            .first();
+        if (!existingRefreshToken || existingRefreshToken.refreshToken !== refreshToken) {
             return new Error("Invalid refresh token");
         }
 
-        const updatedRefreshTokenResult = await Knex(Table.refreshToken)
+        const newJwtData: JwtData = {
+            uid: userId,
+            username: jwtDataOrError.username,
+            email: jwtDataOrError.email
+        };
+        const newAccessToken = jwtService.generateAccessToken(newJwtData);
+        const newRefreshToken = jwtService.generateRefreshToken(newJwtData);
+
+        const updatedRefreshToken: RefreshToken = {
+            id: existingRefreshToken.id,
+            refreshToken: newRefreshToken,
+            userId: userId
+        };
+        const updateResult = await Knex(Table.refreshToken)
             .where("userId", userId)
-            .update({ refreshToken });
-        if (updatedRefreshTokenResult > 0) {
-            const newAccessToken = jwtService.generateAccessToken(jwtDataOrError);
-            const newRefreshToken = jwtService.generateRefreshToken(jwtDataOrError);
+            .update(updatedRefreshToken);
+        if (updateResult > 0) {
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
         }
 
@@ -81,11 +95,19 @@ export class UserAuthService {
 
     async saveOrUpdateUserRefreshToken(userId: number, refreshToken: string): Promise<void | Error> {
         try {
-            const existingRefreshToken = await this.getRefreshToken(userId);
-            if (!(existingRefreshToken instanceof Error)) {
+            const existingRefreshToken = await Knex(Table.refreshToken)
+                .select("*")
+                .where("userId", userId)
+                .first();
+            if (existingRefreshToken) {
+                const updatedRefreshtoken: RefreshToken = {
+                    id: existingRefreshToken.id,
+                    refreshToken: refreshToken,
+                    userId: userId
+                };
                 await Knex(Table.refreshToken)
                     .where("userId", userId)
-                    .update({ refreshToken });
+                    .update(updatedRefreshtoken);
             } else {
                 const newRefreshToken: Omit<RefreshToken, "id"> = {
                     refreshToken: refreshToken,
@@ -94,21 +116,8 @@ export class UserAuthService {
                 await Knex(Table.refreshToken).insert(newRefreshToken);
             }
         } catch (error) {
+            console.log("Error saving refresh token: " + error);
             return new Error("Unknown error saving refresh token");
-        }
-    }
-
-    private async getRefreshToken(userId: number): Promise<RefreshToken | Error> {
-        try {
-            const refreshToken = await Knex(Table.refreshToken)
-                .select("*")
-                .where("id", userId)
-                .first();
-            if (refreshToken) return refreshToken;
-
-            return new Error("Refresh token not found");
-        } catch (error) {
-            return new Error("Error fetching refresh token");
         }
     }
 }

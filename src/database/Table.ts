@@ -1,5 +1,5 @@
 export enum Table {
     user = "user",
     quote = "quote",
-    refreshToken = "refreshToken"
+    refreshToken = "refresh_token"
 }

@@ -55,10 +55,10 @@ export class UserAuthController {
 
     generateRefreshToken = async (req: Request, res: Response): Promise<Response> => { 
         const { refreshToken } = req.body;
-        const result = this.userAuthService.generateAccessToken(refreshToken);
+        const result = await this.userAuthService.generateAccessToken(refreshToken);
         if (result instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message)); 
         }
-        return res.status(StatusCodes.UNAUTHORIZED).json(result); 
+        return res.status(StatusCodes.OK).json(result); 
     };
 }

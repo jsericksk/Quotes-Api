@@ -10,6 +10,7 @@ export async function up(knex: Knex) {
             table.string("refreshToken").notNullable();
             table
                 .integer("userId")
+                .index()
                 .references("id")
                 .inTable(Table.user)
                 .onUpdate("CASCADE")
