@@ -15,14 +15,15 @@ describe(
             await testServer.post(AuthRoute.register).send(user);
         });
 
-        it("Should successfully login and return access token", async () => {
+        it("Should successfully login and return access token and refresh token", async () => {
             const res = await testServer.post(AuthRoute.login).send(user);
 
             expect(res.statusCode).toEqual(StatusCodes.OK);
             expect(res.body).toHaveProperty("accessToken");
+            expect(res.body).toHaveProperty("refreshToken");
         });
 
-        it("Should give error when trying to login with a invalid email and short password", async () => {
+        it("Should give bad request error when trying to login with a invalid email and short password", async () => {
             const res = await testServer
                 .post(AuthRoute.login)
                 .send({ email: "marygmail.com", password: "123" });
