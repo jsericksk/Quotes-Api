@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn ts-node-dev ./src/index.ts",
+    "buildprod": "npm install && tsc",
     "knex:rollback-all": "knex --knexfile ./src/database/knex/Environment.ts migrate:rollback --all",
     "knex:rollback": "knex --knexfile ./src/database/knex/Environment.ts migrate:rollback",
     "knex:migrate": "knex --knexfile ./src/database/knex/Environment.ts migrate:latest",
