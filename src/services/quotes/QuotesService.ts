@@ -71,7 +71,7 @@ export class QuotesService {
             const count = await this.quotesRepository.count(filter);
             if (count) return count;
 
-            return new Error("Error when querying the total number of quotes");
+            return new Error("No quote found");
         } catch (error) {
             if (error instanceof Error) {
                 return new Error(error.message);
