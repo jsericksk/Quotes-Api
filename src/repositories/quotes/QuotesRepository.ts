@@ -6,5 +6,5 @@ export interface QuotesRepository {
     create(quote: Omit<Quote, "id">): Promise<number>
     updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void>
     deleteById(quoteId: number, loggedInUserId: number): Promise<void>
-    count(filter: string): Promise<number>
+    count(filter: string): Promise<number | null>
 }
