@@ -1,114 +1,51 @@
-import { Table } from "../../database/Table";
-import { Knex } from "../../database/knex/Knex";
-import { RefreshToken } from "../../models/RefreshToken";
 import { User } from "../../models/User";
-import { JWTService, JwtData } from "./utils/JWTService";
-import { PasswordCrypto } from "./utils/PasswordCrypto";
-import { v4 as uuidv4 } from "uuid";
+import { UserAuthRepository } from "../../repositories/auth/UserAuthRepository";
 
 export class UserAuthService {
 
+    constructor(private userAuthRepository: UserAuthRepository) { }
+
     async register(user: Omit<User, "id">): Promise<number | Error> {
         try {
-            const userEmail = await this.getUserByEmail(user.email);
-            if ("email" in userEmail) {
-                return new Error("Email not available");
-            }
-
-            const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
-            user.password = hashedPassword;
-            const [result] = await Knex(Table.users).insert(user).returning("id");
-
-            if (typeof result === "object") {
-                return result.id;
-            } else if (typeof result === "number") {
-                return result;
-            }
-
-            return new Error("Error registering user");
+            const registeredUserId = await this.userAuthRepository.register(user);
+            return registeredUserId;
         } catch (error) {
-            console.log("Erro ao registrar: " + error);
+            if (error instanceof Error) {
+                return new Error(error.message);
+            }
             return new Error("Unknown error when registering the user");
         }
     }
 
     async getUserByEmail(email: string): Promise<User | Error> {
         try {
-            const result = await Knex(Table.users)
-                .select("*")
-                .where("email", "=", email)
-                .first();
-
-            if (result) return result;
+            const user = await this.userAuthRepository.getUserByEmail(email);
+            if (user) return user;
 
             return new Error("User not found");
         } catch (error) {
+            if (error instanceof Error) {
+                return new Error(error.message);
+            }
             return new Error("Error fetching user");
         }
     }
 
     async generateAccessToken(refreshToken: string): Promise<object | Error> {
-        const jwtService = new JWTService();
-        const jwtDataOrError = jwtService.verifyRefreshToken(refreshToken);
-        if (jwtDataOrError instanceof Error) {
-            return new Error(jwtDataOrError.message);
+        try {
+            const tokens = await this.userAuthRepository.generateAccessToken(refreshToken);
+            return tokens;
+        } catch (error) {
+            if (error instanceof Error) {
+                return new Error(error.message);
+            }
+            return new Error("Unknown error generating tokens");
         }
-        const userId = jwtDataOrError.uid;
-        const existingRefreshToken = await Knex(Table.refreshTokens)
-            .select("*")
-            .where("userId", userId)
-            .first();
-        if (!existingRefreshToken || existingRefreshToken.refreshToken !== refreshToken) {
-            return new Error("Invalid refresh token");
-        }
-
-        const newJwtData: JwtData = {
-            uid: userId,
-            username: jwtDataOrError.username,
-            email: jwtDataOrError.email
-        };
-        const newAccessToken = jwtService.generateAccessToken(newJwtData);
-        const newRefreshToken = jwtService.generateRefreshToken(newJwtData);
-
-        if (newAccessToken instanceof Error || newRefreshToken instanceof Error) {
-            return new Error("Error generating tokens");
-        }
-
-        const updatedRefreshToken: RefreshToken = {
-            id: existingRefreshToken.id,
-            refreshToken: newRefreshToken,
-            userId: userId
-        };
-        const updateResult = await Knex(Table.refreshTokens)
-            .where("userId", userId)
-            .update(updatedRefreshToken);
-        if (updateResult > 0) {
-            return { accessToken: newAccessToken, refreshToken: newRefreshToken };
-        }
-        return new Error("Unknown error generating tokens");
     }
 
     async saveOrUpdateUserRefreshToken(userId: number, refreshToken: string): Promise<void | Error> {
         try {
-            const existingRefreshToken = await Knex(Table.refreshTokens)
-                .select("*")
-                .where("userId", userId)
-                .first();
-            if (existingRefreshToken) {
-                const updatedRefreshtoken: RefreshToken = {
-                    id: existingRefreshToken.id,
-                    refreshToken: refreshToken,
-                    userId: userId
-                };
-                await Knex(Table.refreshTokens).where("userId", userId).update(updatedRefreshtoken);
-            } else {
-                const newRefreshToken: RefreshToken = {
-                    id: uuidv4(),
-                    refreshToken: refreshToken,
-                    userId: userId
-                };
-                await Knex(Table.refreshTokens).insert(newRefreshToken);
-            }
+            await this.userAuthRepository.saveOrUpdateUserRefreshToken(userId, refreshToken);
         } catch (error) {
             return new Error("Unknown error saving refresh token");
         }

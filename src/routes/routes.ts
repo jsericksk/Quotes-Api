@@ -8,11 +8,13 @@ import { UserAuthService } from "../services/auth/UserAuthService";
 import { QuotesController } from "../controllers/quotes/QuotesController";
 import { QuotesService } from "../services/quotes/QuotesService";
 import { QuotesRequestValidation } from "../controllers/quotes/QuotesRequestValidation";
+import { UserAuthRepositoryImpl } from "../repositories/auth/UserAuthRepositoryImpl";
 
 const router = Router();
 
 const userAuthRequestValidation = new UserAuthRequestValidation();
-const userAuthController = new UserAuthController(new UserAuthService());
+const userAuthRepository = new UserAuthRepositoryImpl();
+const userAuthController = new UserAuthController(new UserAuthService(userAuthRepository));
 router.post(AuthRoute.register, userAuthRequestValidation.validateRegister, userAuthController.register);
 router.post(AuthRoute.login, userAuthRequestValidation.validateLogin, userAuthController.login);
 router.post(AuthRoute.refreshToken, userAuthRequestValidation.validateRefreshToken, userAuthController.generateRefreshToken);
