@@ -1,6 +1,6 @@
 <h1 align="center">Quotes API</h2>
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=ts,nodejs,postgres,&theme=dark" alt="tech-info" />
+  <img src="https://skillicons.dev/icons?i=ts,nodejs,postgres,jest&theme=dark" alt="tech-info" />
 </p>
 
 <p align="center">
