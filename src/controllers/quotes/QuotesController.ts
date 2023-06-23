@@ -3,7 +3,7 @@ import { QuotesService } from "../../services/quotes/QuotesService";
 import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { QUOTE_NOT_FOUND } from "../../commom/Constants";
+import { ErrorConstants } from "../../errors/ErrorConstants";
 import { QuoteRoute } from "../../commom/RouteConstants";
 import { Quote } from "../../models/Quote";
 
@@ -23,7 +23,11 @@ export class QuotesController {
         if (result instanceof Error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
         } else if (count instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(count.message));
+            let countStatusCodeError = StatusCodes.INTERNAL_SERVER_ERROR;
+            if (count.message === ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH) {
+                countStatusCodeError = StatusCodes.NOT_FOUND;
+            }
+            return res.status(countStatusCodeError).json(simpleError(count.message));
         }
 
         res.setHeader("access-control-expose-headers", "x-total-count");
@@ -62,7 +66,7 @@ export class QuotesController {
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));
         if (quote instanceof Error) {
-            if (quote.message === QUOTE_NOT_FOUND) {
+            if (quote.message === ErrorConstants.QUOTE_NOT_FOUND) {
                 return res.status(StatusCodes.NOT_FOUND).json(simpleError(quote.message));
             }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
@@ -98,7 +102,7 @@ export class QuotesController {
         const result = await this.quotesService.updateById(quoteId, loggedInUserId, updatedQuote);
 
         if (result instanceof Error) {
-            if (result.message === QUOTE_NOT_FOUND) {
+            if (result.message === ErrorConstants.QUOTE_NOT_FOUND) {
                 return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
             }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
@@ -112,7 +116,7 @@ export class QuotesController {
         const result = await this.quotesService.deleteById(quoteId, loggedInUserId);
 
         if (result instanceof Error) {
-            if (result.message === QUOTE_NOT_FOUND) {
+            if (result.message === ErrorConstants.QUOTE_NOT_FOUND) {
                 return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
             }
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));

@@ -1,6 +1,6 @@
-import { QUOTE_NOT_FOUND } from "../../commom/Constants";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
+import { ErrorConstants } from "../../errors/ErrorConstants";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "./QuotesRepository";
 
@@ -38,7 +38,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
     async updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void> {
         const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
         if (!isQuoteOwnedByLoggedInUser) {
-            throw new Error(QUOTE_NOT_FOUND);
+            throw new Error(ErrorConstants.QUOTE_NOT_FOUND);
         }
         const result = await Knex(Table.quotes)
             .update(quote)
@@ -51,7 +51,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
     async deleteById(quoteId: number, loggedInUserId: number): Promise<void> {
         const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
         if (!isQuoteOwnedByLoggedInUser) {
-            throw new Error(QUOTE_NOT_FOUND);
+            throw new Error(ErrorConstants.QUOTE_NOT_FOUND);
         }
         const result = await Knex(Table.quotes)
             .where("id", quoteId)

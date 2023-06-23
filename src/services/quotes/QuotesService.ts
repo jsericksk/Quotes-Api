@@ -1,4 +1,4 @@
-import { QUOTE_NOT_FOUND } from "../../commom/Constants";
+import { ErrorConstants } from "../../errors/ErrorConstants";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "../../repositories/quotes/QuotesRepository";
 
@@ -23,7 +23,7 @@ export class QuotesService {
             const quote = await this.quotesRepository.getById(id);
             if (quote) return quote;
 
-            return new Error(QUOTE_NOT_FOUND);
+            return new Error(ErrorConstants.QUOTE_NOT_FOUND);
         } catch (error) {
             if (error instanceof Error) {
                 return new Error(error.message);
@@ -71,7 +71,7 @@ export class QuotesService {
             const count = await this.quotesRepository.count(filter);
             if (count) return count;
 
-            return new Error("No quote found");
+            return new Error(ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH);
         } catch (error) {
             if (error instanceof Error) {
                 return new Error(error.message);
