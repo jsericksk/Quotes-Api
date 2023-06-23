@@ -4,8 +4,8 @@
 </p>
 
 <p align="center">
-  <img src="screenshots/screenshot-01.png" width="1000" height="563" />
-  <img src="screenshots/screenshot-02.png" width="1000" height="563" />
+  <img src="screenshots/screenshot-01.png" width="850" height="478" />
+  <img src="screenshots/screenshot-02.png" width="850" height="478" />
 </p>
 
 ## Objetivo
@@ -192,7 +192,7 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ### Atualizar frase
 
-> PUT /quotes/:id
+> PUT: /quotes/:id
 
 - **Request - Body:** 
 
@@ -207,9 +207,9 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ### Excluir frase
 
-> DELETE /quotes/:id
+> DELETE: /quotes/:id
 
-- **Response - Status 204:** Não há body de resposta.
+- **Response - Status 201:** Não há body de resposta.
 
 ### Error handling
 
