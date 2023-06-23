@@ -192,7 +192,7 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ### Atualizar frase
 
-> PUT: /quotes/:id
+> PUT /quotes/:id
 
 - **Request - Body:** 
 
@@ -207,9 +207,9 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ### Excluir frase
 
-> DELETE: /quotes/:id
+> DELETE /quotes/:id
 
-- **Response - Status 201:** Não há body de resposta.
+- **Response - Status 204:** Não há body de resposta.
 
 ### Error handling
 
