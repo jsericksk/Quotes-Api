@@ -52,7 +52,7 @@ Rotas **/quotes**:
 - [Atualizar frase](#atualizar-frase)
 - [Excluir frase](#excluir-frase) 
 
-Manipular erros:
+Manipulação de erros:
 - [Error handling](#error-handling) 
 
 ### Registrar usuário
@@ -213,7 +213,7 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ### Error handling
 
-Todos os endpoints que precisam de um **body/params/query** na requisição podem devolver uma **BAD_REQUEST (400)** se a requisição contiver valores inválidos. Exemplos de erros:
+Todos os endpoints que precisam de um **body/params/query** podem retornar uma **BAD_REQUEST (400)** se a requisição contiver valores inválidos. Exemplos de erros:
 
 - Login:
 ```json
