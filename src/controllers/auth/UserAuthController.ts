@@ -13,7 +13,7 @@ export class UserAuthController {
     register = async (req: Request, res: Response): Promise<Response> => {
         const user = await this.userAuthService.register(req.body);
         if (user instanceof Error) {
-            return res.status(500).json(simpleError(user.message));
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(user.message));
         }
         return res.status(StatusCodes.CREATED).json(user);
     };
