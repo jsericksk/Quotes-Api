@@ -149,4 +149,13 @@ describe("GetAll - Quotes route", () => {
         expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
         expect(res.body).toHaveProperty("error");
     });
+
+    it("Should give a not found error when trying to get quotes with a filter that doesn't contain quotes", async () => {
+        const res = await testServer
+            .get(QuoteRoute.getAll + "?filter=blablabla")
+            .set(authorizationHeader)
+            .send();
+        expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
+        expect(res.body).toHaveProperty("error");
+    });
 });
