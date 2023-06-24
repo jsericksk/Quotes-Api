@@ -11,7 +11,7 @@ export class QuotesService {
             const quotes = await this.quotesRepository.getAll(page, limit, filter);
             return quotes;
         } catch (error) {
-            return new Error("Error getting all quote");
+            return new Error("Error getting all quotes");
         }
     }
 
