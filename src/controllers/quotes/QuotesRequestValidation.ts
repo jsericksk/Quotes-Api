@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { zodValidation } from "../../middlewares/zodValidation";
 import { Quote } from "../../models/Quote";
+import { QuoteInputConstraint } from "../../commom/InputConstraints";
 
 export interface BodyProps extends Omit<Quote, "id"> { }
 
@@ -33,8 +34,8 @@ export class QuotesRequestValidation {
     validateCreate = zodValidation((customSchema) => ({
         body: customSchema<BodyProps>(
             z.object({
-                quote: z.string().min(7).max(1000),
-                author: z.string().min(1).max(80),
+                quote: z.string().min(QuoteInputConstraint.quote.min).max(QuoteInputConstraint.quote.max),
+                author: z.string().min(QuoteInputConstraint.author.min).max(QuoteInputConstraint.author.max),
             })
         )
     }));
@@ -42,8 +43,8 @@ export class QuotesRequestValidation {
     validateUpdateById = zodValidation((customSchema) => ({
         body: customSchema<BodyProps>(
             z.object({
-                quote: z.string().min(7).max(1000),
-                author: z.string().min(1).max(80),
+                quote: z.string().min(QuoteInputConstraint.quote.min).max(QuoteInputConstraint.quote.max),
+                author: z.string().min(QuoteInputConstraint.author.min).max(QuoteInputConstraint.author.max),
             })
         ),
         params: customSchema<ParamsProps>(

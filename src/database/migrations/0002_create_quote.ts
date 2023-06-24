@@ -1,13 +1,14 @@
 import { Knex } from "knex";
 import { Table } from "../Table";
+import { QuoteInputConstraint } from "../../commom/InputConstraints";
 
 export async function up(knex: Knex) {
     return knex
         .schema
         .createTable(Table.quotes, table => {
             table.increments("id").primary().index();
-            table.string("quote", 1000).notNullable().checkLength(">=", 7);
-            table.string("author", 80).notNullable().checkLength(">=", 1);
+            table.string("quote", QuoteInputConstraint.quote.max).notNullable().checkLength(">=", QuoteInputConstraint.quote.min);
+            table.string("author", QuoteInputConstraint.author.max).notNullable().checkLength(">=", QuoteInputConstraint.author.min);
             table.string("postedByUsername").notNullable();
             table
                 .integer("postedByUserId")
