@@ -33,8 +33,8 @@ export class QuotesRequestValidation {
     validateCreate = zodValidation((customSchema) => ({
         body: customSchema<BodyProps>(
             z.object({
-                quote: z.string().min(7),
-                author: z.string().nonempty(),
+                quote: z.string().min(7).max(1000),
+                author: z.string().min(1).max(200),
             })
         )
     }));
@@ -42,8 +42,8 @@ export class QuotesRequestValidation {
     validateUpdateById = zodValidation((customSchema) => ({
         body: customSchema<BodyProps>(
             z.object({
-                quote: z.string().min(7),
-                author: z.string().nonempty(),
+                quote: z.string().min(7).max(1000),
+                author: z.string().min(1).max(200),
             })
         ),
         params: customSchema<ParamsProps>(
