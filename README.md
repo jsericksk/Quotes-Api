@@ -64,7 +64,7 @@ Manipulação de erros:
 ```json
 {
   "email": "Email do usuário",
-  "username": "Nome do usuário. Deve conter no mínimo 3 caracteres",
+  "username": "Nome do usuário. Deve conter no mínimo 3 caracteres e no máximo 50",
   "password": "Senha do usuário. Deve conter no mínimo 6 caracteres"
 }
 ```
@@ -183,8 +183,8 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ```json
 {
-  "quote": "Frase. Deve conter no mínimo 7 caracteres",
-  "author": "Nome do autor"
+  "quote": "Frase. Deve conter no mínimo 7 caracteres e no máximo 1000",
+  "author": "Nome do autor. Deve conter no mínimo 1 caractere e no máximo 80"
 }
 ```
 
@@ -198,8 +198,8 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 
 ```json
 {
-  "quote": "Frase atualizada. Deve conter no mínimo 7 caracteres",
-  "author": "Nome do autor atualizado"
+  "quote": "Frase atualizada. Deve conter no mínimo 7 caracteres e no máximo 1000",
+  "author": "Nome do autor atualizado. Deve conter no mínimo 1 caractere e no máximo 80"
 }
 ```
 
