@@ -11,10 +11,7 @@ export class QuotesService {
             const quotes = await this.quotesRepository.getAll(page, limit, filter);
             return quotes;
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
-            }
-            return new Error("Unknown error getting all quote");
+            return new Error("Error getting all quote");
         }
     }
 
@@ -37,10 +34,7 @@ export class QuotesService {
             const createdQuoteId = await this.quotesRepository.create(quote);
             return createdQuoteId;
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
-            }
-            return new Error("Unknown error creating quote");
+            return new Error("Error creating quote");
         }
     }
 
