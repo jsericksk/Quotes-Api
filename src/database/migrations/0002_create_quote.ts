@@ -7,7 +7,7 @@ export async function up(knex: Knex) {
         .createTable(Table.quotes, table => {
             table.increments("id").primary().index();
             table.string("quote", 1000).notNullable().checkLength(">=", 7);
-            table.string("author", 200).notNullable().checkLength(">=", 1);
+            table.string("author", 80).notNullable().checkLength(">=", 1);
             table.string("postedByUsername").notNullable();
             table
                 .integer("postedByUserId")

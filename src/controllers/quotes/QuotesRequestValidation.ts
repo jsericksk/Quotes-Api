@@ -34,7 +34,7 @@ export class QuotesRequestValidation {
         body: customSchema<BodyProps>(
             z.object({
                 quote: z.string().min(7).max(1000),
-                author: z.string().min(1).max(200),
+                author: z.string().min(1).max(80),
             })
         )
     }));
@@ -43,7 +43,7 @@ export class QuotesRequestValidation {
         body: customSchema<BodyProps>(
             z.object({
                 quote: z.string().min(7).max(1000),
-                author: z.string().min(1).max(200),
+                author: z.string().min(1).max(80),
             })
         ),
         params: customSchema<ParamsProps>(
