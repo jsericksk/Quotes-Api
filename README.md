@@ -12,11 +12,11 @@
 
 Esse é um projeto básico criado com o objetivo de aprender mais sobre APIs/backend, assim como **TypeScript** e **NodeJS**. É um projeto com fins unicamente de estudos.
 
-## ✏ Funcionalidades
+## :pencil2: Funcionalidades
 
 A API tem como principal função publicar e obter frases, sendo necessário se registrar para tal. Possui um CRUD completo de frases para usuários logados, com opções de adicionar, obter, atualizar e excluir frases, além de contar com o recurso de paginação ao obter as frases. Os dados são armazenados em um banco de dados **PostegreSQL**.
 
-## 🛠 Principais tecnologias e bibliotecas utilizadas
+## :hammer_and_wrench: Principais tecnologias e bibliotecas utilizadas
 
 - [NodeJS](https://nodejs.org/en) e [Express](https://expressjs.com);
 - [Knex](https://github.com/knex/knex): Query builder;
@@ -26,7 +26,7 @@ A API tem como principal função publicar e obter frases, sendo necessário se 
 - [Zod](https://github.com/colinhacks/zod): Validação de requisições;
 - [Http-Status-Codes](https://github.com/prettymuchbryce/http-status-codes): Status codes mais legíveis.
 
-## 🚀 Executar localmente
+## :rocket: Executar localmente
 
 Estou utilizando o **yarn**, mas você pode utilizar o gerenciador de pacotes de sua preferência. Antes de executar localmente, é necessário definir as variáveis de ambiente no arquivo **.env**. Você precisa criar o arquivo .env e copiar as variáveis do **.env.example**, preenchendo com os valores de configuração adequados.
 
@@ -38,7 +38,7 @@ Estou utilizando o **yarn**, mas você pode utilizar o gerenciador de pacotes de
 - **yarn knex:rollback:** Executar rollback.
 - **yarn knex:seed:** Executar seeds.
 
-## 📋 API Docs
+## :memo: API Docs
 
 Rotas **/auth**:
 - [Registrar usuário](#registrar-usuário)
