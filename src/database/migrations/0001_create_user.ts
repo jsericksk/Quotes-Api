@@ -6,8 +6,8 @@ export async function up(knex: Knex) {
         .schema
         .createTable(Table.users, table => {
             table.increments("id").primary().index();
-            table.string("email").index().notNullable().unique().checkLength(">=", 6);
-            table.string("username").notNullable().checkLength(">=", 3);
+            table.string("email", 270).index().notNullable().unique().checkLength(">=", 6);
+            table.string("username", 50).notNullable().checkLength(">=", 3);
             table.string("password").notNullable().checkLength(">=", 6);
         })
         .then(() => {
