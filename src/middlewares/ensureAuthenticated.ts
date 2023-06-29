@@ -14,7 +14,7 @@ export async function ensureAuthenticated(req: Request, res: Response, next: Nex
     }
     const jwtDataOrError = new JWTService().verifyAccessToken(token);
     if (jwtDataOrError instanceof Error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(jwtDataOrError.message));
+        return res.status(StatusCodes.UNAUTHORIZED).json(simpleError(jwtDataOrError.message));
     }
 
     req.headers.userId = jwtDataOrError.uid.toString();

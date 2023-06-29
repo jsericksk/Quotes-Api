@@ -57,7 +57,7 @@ export class UserAuthController {
         const { refreshToken } = req.body;
         const result = await this.userAuthService.generateAccessToken(refreshToken);
         if (result instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
+            return res.status(StatusCodes.UNAUTHORIZED).json(simpleError(result.message));
         }
         return res.status(StatusCodes.OK).json(result);
     };
