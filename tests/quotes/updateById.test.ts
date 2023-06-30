@@ -22,7 +22,7 @@ describe("UpdateById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        quoteIdPostedByJohn = resCreate.body;
+        quoteIdPostedByJohn = resCreate.body.id;
     });
 
     it("Should udpate a quote successfully", async () => {
@@ -30,7 +30,7 @@ describe("UpdateById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resUpdateById = await testServer
             .put(QuoteRoute.routeForTests + quoteId)
             .set(authorizationHeader)
@@ -44,7 +44,7 @@ describe("UpdateById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resUpdateById = await testServer
             .put(QuoteRoute.routeForTests + quoteId)
             .send();
@@ -57,7 +57,7 @@ describe("UpdateById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resUpdateById = await testServer
             .put(QuoteRoute.routeForTests + quoteId)
             .set(authorizationHeader)

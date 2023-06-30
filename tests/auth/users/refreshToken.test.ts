@@ -44,7 +44,7 @@ describe(
 
         it("Should give error when trying to use invalid refresh token", async () => {
             const res = await testServer.post(AuthRoute.refreshToken).send({ refreshToken: "Blablablabla" });
-            expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(res.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
             expect(res.body).toHaveProperty("error");
         });
 
@@ -59,7 +59,7 @@ describe(
                 .post(QuoteRoute.create)
                 .set({ Authorization: `Bearer ${generatedRefreshToken}` })
                 .send({ quote: "Frase de teste", author: "John" });
-            expect(resCreate.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resCreate.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
             expect(resCreate.body).toHaveProperty("error");
         });
     }

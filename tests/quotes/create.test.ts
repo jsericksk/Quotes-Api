@@ -25,7 +25,12 @@ describe("Create - Quotes route", () => {
             .send(quote);
 
         expect(res.statusCode).toEqual(StatusCodes.CREATED);
-        expect(typeof res.body).toEqual("number");
+        expect(res.body).toHaveProperty("id");
+        expect(res.body).toHaveProperty("quote");
+        expect(res.body).toHaveProperty("author");
+        expect(res.body).toHaveProperty("postedByUsername");
+        expect(res.body).toHaveProperty("postedByUserId");
+        expect(res.body).toHaveProperty("publicationDate");
     });
 
     it("Should give unauthorized error when creating without accessToken", async () => {

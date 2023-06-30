@@ -22,13 +22,14 @@ describe("GetById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resGetById = await testServer
             .get(QuoteRoute.routeForTests + quoteId)
             .set(authorizationHeader)
             .send();
 
         expect(resGetById.statusCode).toEqual(StatusCodes.OK);
+        expect(resGetById.body).toHaveProperty("id");
         expect(resGetById.body).toHaveProperty("quote");
         expect(resGetById.body).toHaveProperty("author");
         expect(resGetById.body).toHaveProperty("publicationDate");

@@ -22,7 +22,7 @@ describe("DeleteById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        quoteIdPostedByJohn = resCreate.body;
+        quoteIdPostedByJohn = resCreate.body.id;
     });
 
     it("Should delete a quote successfully", async () => {
@@ -34,7 +34,7 @@ describe("DeleteById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send(quote);
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resDeleteById = await testServer
             .delete(QuoteRoute.routeForTests + quoteId)
             .set(authorizationHeader)
@@ -48,7 +48,7 @@ describe("DeleteById - Quotes route", () => {
             .post(QuoteRoute.create)
             .set(authorizationHeader)
             .send();
-        const quoteId = resCreate.body;
+        const quoteId = resCreate.body.id;
         const resDeleteById = await testServer
             .delete(QuoteRoute.routeForTests + quoteId)
             .send();
