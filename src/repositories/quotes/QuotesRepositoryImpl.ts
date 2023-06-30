@@ -27,11 +27,8 @@ export class QuotesRepositoryImpl implements QuotesRepository {
         return null;
     }
 
-    async create(quote: Omit<Quote, "id">): Promise<number> {
-        const [result] = await Knex(Table.quotes).insert(quote).returning("id");
-        if (typeof result === "object") {
-            return result.id;
-        }
+    async create(quote: Omit<Quote, "id">): Promise<Quote> {
+        const [result] = await Knex(Table.quotes).insert(quote).returning("*");
         return result;
     }
 

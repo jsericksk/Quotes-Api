@@ -29,7 +29,7 @@ export class QuotesService {
         }
     }
 
-    async create(quote: Omit<Quote, "id">): Promise<number | Error> {
+    async create(quote: Omit<Quote, "id">): Promise<Quote | Error> {
         try {
             const createdQuoteId = await this.quotesRepository.create(quote);
             return createdQuoteId;
