@@ -188,7 +188,18 @@ Passe **Authorization: Bearer ***access token***** no header de requisição.
 }
 ```
 
-- **Response - Status 201:** ID da frase criada (int).
+- **Response - Status 201:** 
+
+```json
+{
+  "id": 1,
+  "quote": "A imaginação é mais importante que o conhecimento.",
+  "author": "Albert Einstein",
+  "postedByUsername": "John",
+  "postedByUserId": 1,
+  "publicationDate": "2023-06-21T15:20:28.936Z"
+}
+```
 
 ### Atualizar frase
 
