@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
-import { CustomError, ErrorConstants } from "../../errors/CustomError";
+import { CustomError, ErrorMessageConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "./QuotesRepository";
 
@@ -36,7 +36,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
     async updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void> {
         const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
         if (!isQuoteOwnedByLoggedInUser) {
-            throw new CustomError(ErrorConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
+            throw new CustomError(ErrorMessageConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
         }
         const result = await Knex(Table.quotes)
             .update(quote)
@@ -49,7 +49,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
     async deleteById(quoteId: number, loggedInUserId: number): Promise<void> {
         const isQuoteOwnedByLoggedInUser = await this.isQuoteOwnedByLoggedInUser(quoteId, loggedInUserId);
         if (!isQuoteOwnedByLoggedInUser) {
-            throw new CustomError(ErrorConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
+            throw new CustomError(ErrorMessageConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
         }
         const result = await Knex(Table.quotes)
             .where("id", quoteId)

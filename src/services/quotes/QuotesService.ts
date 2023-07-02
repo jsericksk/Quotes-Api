@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { CustomError, ErrorCode, ErrorConstants } from "../../errors/CustomError";
+import { CustomError, ErrorCode, ErrorMessageConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "../../repositories/quotes/QuotesRepository";
 
@@ -21,7 +21,7 @@ export class QuotesService {
             const quote = await this.quotesRepository.getById(id);
             if (quote) return quote;
 
-            return new CustomError(ErrorConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
+            return new CustomError(ErrorMessageConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
         } catch (error) {
             if (error instanceof CustomError) {
                 return new CustomError(error.message, error.statusCode);
@@ -66,7 +66,7 @@ export class QuotesService {
             const count = await this.quotesRepository.count(filter);
             if (count) return count;
 
-            return new CustomError(ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH, StatusCodes.NOT_FOUND, ErrorCode.SEARCH_WITHOUT_RESULTS);
+            return new CustomError(ErrorMessageConstants.SEARCH_WITHOUT_RESULTS, StatusCodes.NOT_FOUND, ErrorCode.SEARCH_WITHOUT_RESULTS);
         } catch (error) {
             if (error instanceof CustomError) {
                 return new CustomError(error.message, error.statusCode, error.errorCode);

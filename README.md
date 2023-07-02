@@ -264,11 +264,17 @@ Todos os endpoints que precisam de um **body/params/query** podem retornar uma *
 }
 ```
 
-Todos os endpoints podem retornar um body contendo um **error** padrão.
+Todos os endpoints podem retornar um body contendo um **error** e **error_code** padrão. **error_code** sempre será retornado com um valor "unespecifed" caso não seja importante distinguir o tipo de erro. Códigos de erro disponíveis:
+
+- **email_not_available**
+- **username_not_available**
+- **search_without_results**
+- **invalid_page**
 
 ```json
 {
-  "error": "Invalid email or password"
+  "error": "Email not available",
+  "error_code": "email_not_available"
 }
 ```
 
@@ -278,7 +284,8 @@ Alguns endpoints podem retornar **NOT_FOUND (404)** se o recurso não for encont
 
 ```json
 {
-  "error": "There is no quote with the given id"
+  "error": "There is no quote with the given id",
+  "error_code": "unspecified"
 }
 ```
 
@@ -286,6 +293,7 @@ Alguns endpoints podem retornar **NOT_FOUND (404)** se o recurso não for encont
 
 ```json
 {
-  "error": "Invalid page, no more items"
+  "error": "Invalid page, no more items",
+  "error_code": "invalid_page"
 }
 ```
