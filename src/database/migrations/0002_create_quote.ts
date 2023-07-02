@@ -7,7 +7,7 @@ export async function up(knex: Knex) {
         .schema
         .createTable(Table.quotes, table => {
             table.increments("id").primary().index();
-            table.string("quote", QuoteInputConstraint.quote.max).notNullable().checkLength(">=", QuoteInputConstraint.quote.min);
+            table.string("quote", QuoteInputConstraint.quote.max).index().notNullable().checkLength(">=", QuoteInputConstraint.quote.min);
             table.string("author", QuoteInputConstraint.author.max).notNullable().checkLength(">=", QuoteInputConstraint.author.min);
             table.string("postedByUsername").notNullable();
             table
