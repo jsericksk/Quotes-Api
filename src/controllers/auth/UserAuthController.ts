@@ -20,7 +20,7 @@ export class UserAuthController {
 
     login = async (req: Request, res: Response): Promise<Response> => {
         const credentials = req.body as Omit<User, "id" | "username">;
-        const user = await this.userAuthService.getUserByEmail(credentials.email);
+        const user = await this.userAuthService.getUserByEmailOrUsername(credentials.email);
         if (user instanceof Error) {
             return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
         }

@@ -12,7 +12,12 @@ export async function up(knex: Knex) {
                 .notNullable()
                 .unique()
                 .checkLength(">=", AuthInputConstraint.email.min);
-            table.string("username", AuthInputConstraint.username.max).notNullable().checkLength(">=", AuthInputConstraint.username.min);
+            table
+                .string("username", AuthInputConstraint.username.max)
+                .index()
+                .notNullable()
+                .unique()
+                .checkLength(">=", AuthInputConstraint.username.min);
             table.string("password").notNullable().checkLength(">=", AuthInputConstraint.password.min);
         })
         .then(() => {

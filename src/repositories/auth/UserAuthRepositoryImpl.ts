@@ -10,9 +10,13 @@ import { v4 as uuidv4 } from "uuid";
 export class UserAuthRepositoryImpl implements UserAuthRepository {
 
     async register(user: Omit<User, "id">): Promise<number> {
-        const existingUser = await this.getUserByEmail(user.email);
-        if (existingUser && "email" in existingUser) {
+        const existingUserWithEmail = await this.getUserByEmailOrUsername(user.email);
+        const existingUserWithUsername = await this.getUserByEmailOrUsername(user.username);
+        if (existingUserWithEmail) {
             throw new Error("Email not available");
+        }
+        if (existingUserWithUsername) {
+            throw new Error("Username not available");
         }
 
         const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
@@ -28,10 +32,11 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
         throw new Error("Error registering user");
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
+    async getUserByEmailOrUsername(emailOrUsername: string): Promise<User | null> {
         const user = await Knex(Table.users)
             .select("*")
-            .where("email", "=", email)
+            .where("email", emailOrUsername)
+            .orWhere("username", emailOrUsername)
             .first();
         if (user) return user;
 

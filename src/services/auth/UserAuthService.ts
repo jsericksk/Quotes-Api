@@ -17,9 +17,9 @@ export class UserAuthService {
         }
     }
 
-    async getUserByEmail(email: string): Promise<User | Error> {
+    async getUserByEmailOrUsername(emailOrUsername: string): Promise<User | Error> {
         try {
-            const user = await this.userAuthRepository.getUserByEmail(email);
+            const user = await this.userAuthRepository.getUserByEmailOrUsername(emailOrUsername);
             if (user) return user;
 
             return new Error("User not found");
