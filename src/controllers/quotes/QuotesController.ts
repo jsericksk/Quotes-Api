@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
 import { QuoteRoute } from "../../commom/RouteConstants";
 import { Quote } from "../../models/Quote";
-import { CustomError } from "../../errors/CustomError";
+import { CustomError, ErrorCode } from "../../errors/CustomError";
 
 export class QuotesController {
 
@@ -23,7 +23,7 @@ export class QuotesController {
         if (result instanceof CustomError) {
             return res.status(result.statusCode).json(simpleError(result.message));
         } else if (count instanceof CustomError) {
-            return res.status(count.statusCode).json(simpleError(count.message));
+            return res.status(count.statusCode).json(simpleError(count.message, count.errorCode));
         }
 
         res.setHeader("access-control-expose-headers", "x-total-count");
@@ -35,7 +35,7 @@ export class QuotesController {
         const previousPage = page > 1 ? page - 1 : null;
 
         if (page > totalPages) {
-            return res.status(StatusCodes.NOT_FOUND).json(simpleError("Invalid page, no more items"));
+            return res.status(StatusCodes.NOT_FOUND).json(simpleError("Invalid page, no more items", ErrorCode.INVALID_PAGE));
         }
 
         const getPage = (page: number): string => {

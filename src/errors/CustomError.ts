@@ -13,9 +13,9 @@ export const ErrorCode = {
     EMAIL_NOT_AVAILABLE: "email_not_available",
     USERNAME_NOT_AVAILABLE: "username_not_available",
     QUOTE_NOT_FOUND: "quote_not_found",
-    QUOTE_NOT_FOUND_IN_SEARCH: "quote_not_found_in_search"
+    SEARCH_WITHOUT_RESULTS: "search_without_results",
+    INVALID_PAGE: "invalid_page",
 };
-
 export const ErrorConstants = {
     QUOTE_NOT_FOUND: "There is no quote with the given id",
     QUOTE_NOT_FOUND_IN_SEARCH: "No quote found"
