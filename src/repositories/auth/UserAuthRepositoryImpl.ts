@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
 import { RefreshToken } from "../../models/RefreshToken";
@@ -6,6 +7,7 @@ import { JWTService, JwtData } from "../../services/auth/utils/JWTService";
 import { PasswordCrypto } from "../../services/auth/utils/PasswordCrypto";
 import { UserAuthRepository } from "./UserAuthRepository";
 import { v4 as uuidv4 } from "uuid";
+import { CustomError, ErrorCode } from "../../errors/CustomError";
 
 export class UserAuthRepositoryImpl implements UserAuthRepository {
 
@@ -13,10 +15,10 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
         const existingUserWithEmail = await this.getUserByEmailOrUsername(user.email);
         const existingUserWithUsername = await this.getUserByEmailOrUsername(user.username);
         if (existingUserWithEmail) {
-            throw new Error("Email not available");
+            throw new CustomError("Email not available", StatusCodes.CONFLICT, ErrorCode.EMAIL_NOT_AVAILABLE);
         }
         if (existingUserWithUsername) {
-            throw new Error("Username not available");
+            throw new CustomError("Username not available", StatusCodes.CONFLICT, ErrorCode.USERNAME_NOT_AVAILABLE);
         }
 
         const hashedPassword = await new PasswordCrypto().hashPassword(user.password);
@@ -29,7 +31,7 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
             return result;
         }
 
-        throw new Error("Error registering user");
+        throw new CustomError("Error registering user", StatusCodes.INTERNAL_SERVER_ERROR);
     }
 
     async getUserByEmailOrUsername(emailOrUsername: string): Promise<User | null> {
@@ -47,7 +49,7 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
         const jwtService = new JWTService();
         const jwtDataOrError = jwtService.verifyRefreshToken(refreshToken);
         if (jwtDataOrError instanceof Error) {
-            throw new Error(jwtDataOrError.message);
+            throw new CustomError(jwtDataOrError.message, StatusCodes.UNAUTHORIZED);
         }
         const userId = jwtDataOrError.uid;
         const existingRefreshToken = await Knex(Table.refreshTokens)
@@ -55,7 +57,7 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
             .where("userId", userId)
             .first();
         if (!existingRefreshToken || existingRefreshToken.refreshToken !== refreshToken) {
-            throw new Error("Invalid refresh token");
+            throw new CustomError("Invalid refresh token", StatusCodes.UNAUTHORIZED);
         }
 
         const newJwtData: JwtData = {
@@ -67,7 +69,7 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
         const newRefreshToken = jwtService.generateRefreshToken(newJwtData);
 
         if (newAccessToken instanceof Error || newRefreshToken instanceof Error) {
-            throw new Error("Error generating tokens");
+            throw new CustomError("Error generating tokens", StatusCodes.UNAUTHORIZED);
         }
 
         const updatedRefreshToken: RefreshToken = {
@@ -82,7 +84,8 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
             const tokens = { accessToken: newAccessToken, refreshToken: newRefreshToken };
             return tokens;
         }
-        throw new Error("Error generating tokens");
+
+        throw new CustomError("Error generating tokens", StatusCodes.UNAUTHORIZED);
     }
 
     async saveOrUpdateUserRefreshToken(userId: number, refreshToken: string): Promise<void> {

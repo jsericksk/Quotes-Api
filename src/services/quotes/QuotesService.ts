@@ -1,4 +1,5 @@
-import { ErrorConstants } from "../../errors/ErrorConstants";
+import { StatusCodes } from "http-status-codes";
+import { CustomError, ErrorConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "../../repositories/quotes/QuotesRepository";
 
@@ -6,71 +7,71 @@ export class QuotesService {
 
     constructor(private quotesRepository: QuotesRepository) { }
 
-    async getAll(page: number, limit: number, filter: string): Promise<Quote[] | Error> {
+    async getAll(page: number, limit: number, filter: string): Promise<Quote[] | CustomError> {
         try {
             const quotes = await this.quotesRepository.getAll(page, limit, filter);
             return quotes;
         } catch (error) {
-            return new Error("Error getting all quotes");
+            return new CustomError("Error getting all quotes", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async getById(id: number): Promise<Quote | Error> {
+    async getById(id: number): Promise<Quote | CustomError> {
         try {
             const quote = await this.quotesRepository.getById(id);
             if (quote) return quote;
 
-            return new Error(ErrorConstants.QUOTE_NOT_FOUND);
+            return new CustomError(ErrorConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
+            if (error instanceof CustomError) {
+                return new CustomError(error.message, error.statusCode);
             }
-            return new Error("Unknown error getting quote");
+            return new CustomError("Unknown error getting quote", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async create(quote: Omit<Quote, "id">): Promise<Quote | Error> {
+    async create(quote: Omit<Quote, "id">): Promise<Quote | CustomError> {
         try {
             const createdQuoteId = await this.quotesRepository.create(quote);
             return createdQuoteId;
         } catch (error) {
-            return new Error("Error creating quote");
+            return new CustomError("Error creating quote", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void | Error> {
+    async updateById(quoteId: number, loggedInUserId: number, quote: Omit<Quote, "id">): Promise<void | CustomError> {
         try {
             await this.quotesRepository.updateById(quoteId, loggedInUserId, quote);
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
+            if (error instanceof CustomError) {
+                return new CustomError(error.message, error.statusCode, error.errorCode);
             }
-            return new Error("Unknown error updating quote");
+            return new CustomError("Unknown error updating quote", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async deleteById(quoteId: number, loggedInUserId: number): Promise<void | Error> {
+    async deleteById(quoteId: number, loggedInUserId: number): Promise<void | CustomError> {
         try {
             await this.quotesRepository.deleteById(quoteId, loggedInUserId);
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
+            if (error instanceof CustomError) {
+                return new CustomError(error.message, error.statusCode, error.errorCode);
             }
-            return new Error("Unknown error deleting quote");
+            return new CustomError("Unknown error deleting quote", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async count(filter = ""): Promise<number | Error> {
+    async count(filter = ""): Promise<number | CustomError> {
         try {
             const count = await this.quotesRepository.count(filter);
             if (count) return count;
 
-            return new Error(ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH);
+            return new CustomError(ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH, StatusCodes.NOT_FOUND);
         } catch (error) {
-            if (error instanceof Error) {
-                return new Error(error.message);
+            if (error instanceof CustomError) {
+                return new CustomError(error.message, error.statusCode, error.errorCode);
             }
-            return new Error("Unknown error when querying the total number of quotes");
+            return new CustomError("Unknown error when querying the total number of quotes", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -5,6 +5,7 @@ import { JWTService, JwtData } from "../../services/auth/utils/JWTService";
 import { PasswordCrypto } from "../../services/auth/utils/PasswordCrypto";
 import { User } from "../../models/User";
 import { UserAuthService } from "../../services/auth/UserAuthService";
+import { CustomError } from "../../errors/CustomError";
 
 export class UserAuthController {
 
@@ -12,8 +13,8 @@ export class UserAuthController {
 
     register = async (req: Request, res: Response): Promise<Response> => {
         const user = await this.userAuthService.register(req.body);
-        if (user instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(user.message));
+        if (user instanceof CustomError) {
+            return res.status(user.statusCode).json(simpleError(user.message, user.errorCode));
         }
         return res.status(StatusCodes.CREATED).json(user);
     };
@@ -21,7 +22,7 @@ export class UserAuthController {
     login = async (req: Request, res: Response): Promise<Response> => {
         const credentials = req.body as Omit<User, "id" | "username">;
         const user = await this.userAuthService.getUserByEmailOrUsername(credentials.email);
-        if (user instanceof Error) {
+        if (user instanceof CustomError) {
             return res.status(StatusCodes.UNAUTHORIZED).json(simpleError("Invalid email or password"));
         }
         const passwordMatch = await new PasswordCrypto().verifyPassword(credentials.password, user.password);
@@ -56,8 +57,8 @@ export class UserAuthController {
     generateRefreshToken = async (req: Request, res: Response): Promise<Response> => {
         const { refreshToken } = req.body;
         const result = await this.userAuthService.generateAccessToken(refreshToken);
-        if (result instanceof Error) {
-            return res.status(StatusCodes.UNAUTHORIZED).json(simpleError(result.message));
+        if (result instanceof CustomError) {
+            return res.status(result.statusCode).json(simpleError(result.message));
         }
         return res.status(StatusCodes.OK).json(result);
     };

@@ -3,9 +3,9 @@ import { QuotesService } from "../../services/quotes/QuotesService";
 import { BodyProps, GetAllQueryProps } from "./QuotesRequestValidation";
 import { StatusCodes } from "http-status-codes";
 import { simpleError } from "../../errors/simpleError";
-import { ErrorConstants } from "../../errors/ErrorConstants";
 import { QuoteRoute } from "../../commom/RouteConstants";
 import { Quote } from "../../models/Quote";
+import { CustomError } from "../../errors/CustomError";
 
 export class QuotesController {
 
@@ -20,14 +20,10 @@ export class QuotesController {
         const result = await this.quotesService.getAll(page, limit, filter);
         const count = await this.quotesService.count(queryProps.filter);
 
-        if (result instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
-        } else if (count instanceof Error) {
-            let countStatusCodeError = StatusCodes.INTERNAL_SERVER_ERROR;
-            if (count.message === ErrorConstants.QUOTE_NOT_FOUND_IN_SEARCH) {
-                countStatusCodeError = StatusCodes.NOT_FOUND;
-            }
-            return res.status(countStatusCodeError).json(simpleError(count.message));
+        if (result instanceof CustomError) {
+            return res.status(result.statusCode).json(simpleError(result.message));
+        } else if (count instanceof CustomError) {
+            return res.status(count.statusCode).json(simpleError(count.message));
         }
 
         res.setHeader("access-control-expose-headers", "x-total-count");
@@ -65,11 +61,8 @@ export class QuotesController {
 
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));
-        if (quote instanceof Error) {
-            if (quote.message === ErrorConstants.QUOTE_NOT_FOUND) {
-                return res.status(StatusCodes.NOT_FOUND).json(simpleError(quote.message));
-            }
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(quote.message));
+        if (quote instanceof CustomError) {
+            return res.status(quote.statusCode).json(simpleError(quote.message));
         }
         return res.status(StatusCodes.OK).json(quote);
     };
@@ -89,8 +82,8 @@ export class QuotesController {
         };
 
         const createdQuote = await this.quotesService.create(quoteToCreate);
-        if (createdQuote instanceof Error) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(createdQuote.message));
+        if (createdQuote instanceof CustomError) {
+            return res.status(createdQuote.statusCode).json(simpleError(createdQuote.message));
         }
         return res.status(StatusCodes.CREATED).json(createdQuote);
     };
@@ -101,11 +94,8 @@ export class QuotesController {
         const updatedQuote = req.body as BodyProps;
         const result = await this.quotesService.updateById(quoteId, loggedInUserId, updatedQuote);
 
-        if (result instanceof Error) {
-            if (result.message === ErrorConstants.QUOTE_NOT_FOUND) {
-                return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
-            }
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
+        if (result instanceof CustomError) {
+            return res.status(result.statusCode).json(simpleError(result.message));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);
     };
@@ -115,11 +105,8 @@ export class QuotesController {
         const loggedInUserId = Number(req.headers.userId);
         const result = await this.quotesService.deleteById(quoteId, loggedInUserId);
 
-        if (result instanceof Error) {
-            if (result.message === ErrorConstants.QUOTE_NOT_FOUND) {
-                return res.status(StatusCodes.NOT_FOUND).json(simpleError(result.message));
-            }
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(simpleError(result.message));
+        if (result instanceof CustomError) {
+            return res.status(result.statusCode).json(simpleError(result.message));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);
     };
