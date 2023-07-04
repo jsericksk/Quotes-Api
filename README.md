@@ -119,13 +119,19 @@ Manipulação de erros:
 **NOTA IMPORTANTE:** Todas as rotas de frases são protegidas e precisam de um Authorization Header.  
 Passe **Authorization: Bearer ***access token***** no header de requisição.
 
+- Você pode pesquisar por frases ao fornecer um **filter** e obter todas as frases de um determinado usuário ao fornecer o **userId**.
+
 > GET /quotes
 
 > GET /quotes?page=1
 
 > GET /quotes?filter=conhecimento
 
+> GET /quotes?userId=1
+
 > GET /quotes?page=1&filter=conhecimento
+
+> GET /quotes?userId=1&filter=conhecimento
 
 - **Response - Status 200:**
 
