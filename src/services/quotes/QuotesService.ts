@@ -7,12 +7,15 @@ export class QuotesService {
 
     constructor(private quotesRepository: QuotesRepository) { }
 
-    async getAll(page: number, limit: number, filter: string): Promise<Quote[] | CustomError> {
+    async getAll(page: number, limit: number, filter: string, userId?: number): Promise<Quote[] | CustomError> {
         try {
-            const quotes = await this.quotesRepository.getAll(page, limit, filter);
+            const quotes = await this.quotesRepository.getAll(page, limit, filter, userId);
             return quotes;
         } catch (error) {
-            return new CustomError("Error getting all quotes", StatusCodes.INTERNAL_SERVER_ERROR);
+            if (error instanceof CustomError) {
+                return new CustomError(error.message, error.statusCode, error.errorCode);
+            }
+            return new CustomError("Unknown error getting all quotes", StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -24,7 +27,7 @@ export class QuotesService {
             return new CustomError(ErrorMessageConstants.QUOTE_NOT_FOUND, StatusCodes.NOT_FOUND);
         } catch (error) {
             if (error instanceof CustomError) {
-                return new CustomError(error.message, error.statusCode);
+                return new CustomError(error.message, error.statusCode, error.errorCode);
             }
             return new CustomError("Unknown error getting quote", StatusCodes.INTERNAL_SERVER_ERROR);
         }
@@ -61,9 +64,9 @@ export class QuotesService {
         }
     }
 
-    async count(filter = ""): Promise<number | CustomError> {
+    async count(filter: string, userId?: number): Promise<number | CustomError> {
         try {
-            const count = await this.quotesRepository.count(filter);
+            const count = await this.quotesRepository.count(filter, userId);
             if (count) return count;
 
             return new CustomError(ErrorMessageConstants.SEARCH_WITHOUT_RESULTS, StatusCodes.NOT_FOUND, ErrorCode.SEARCH_WITHOUT_RESULTS);

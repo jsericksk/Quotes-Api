@@ -10,6 +10,7 @@ export interface ParamsProps { id: number }
 export interface GetAllQueryProps {
     page?: number;
     filter?: string;
+    userId?: number
 }
 
 export class QuotesRequestValidation {
@@ -19,6 +20,7 @@ export class QuotesRequestValidation {
             z.object({
                 page: z.coerce.number().int().min(1).optional(),
                 filter: z.coerce.string().optional(),
+                userId: z.coerce.number().int().optional(),
             })
         )
     }));

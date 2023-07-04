@@ -7,14 +7,28 @@ import { QuotesRepository } from "./QuotesRepository";
 
 export class QuotesRepositoryImpl implements QuotesRepository {
 
-    async getAll(page: number, limit: number, filter: string): Promise<Quote[]> {
+    async getAll(page: number, limit: number, filter: string, userId?: number): Promise<Quote[]> {
+        if (userId) {
+            const quotesFromUserId = await Knex(Table.quotes)
+                .select("*")
+                .where("postedByUserId", userId)
+                .andWhere("quote", "like", `%${filter}%`)
+                .orderBy("publicationDate", "desc")
+                .offset((page - 1) * limit)
+                .limit(limit);
+
+            if (quotesFromUserId.length == 0) {
+                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
+            }
+            return quotesFromUserId;
+        }
+
         const quotes = await Knex(Table.quotes)
             .select("*")
             .where("quote", "like", `%${filter}%`)
             .orderBy("publicationDate", "desc")
             .offset((page - 1) * limit)
             .limit(limit);
-
         return quotes;
     }
 
@@ -59,10 +73,12 @@ export class QuotesRepositoryImpl implements QuotesRepository {
         throw new CustomError("Error updating quote", StatusCodes.INTERNAL_SERVER_ERROR);
     }
 
-    async count(filter: string): Promise<number | null> {
-        const [{ count }] = await Knex(Table.quotes)
-            .where("quote", "like", `%${filter}%`)
-            .count<[{ count: number }]>("* as count");
+    async count(filter: string, userId?: number): Promise<number | null> {
+        const query = Knex(Table.quotes).where("quote", "like", `%${filter}%`);
+        if (userId) {
+            query.andWhere("postedByUserId", userId);
+        }
+        const [{ count }] = await query.count<{ count: number }[]>("* as count");
         if (Number.isInteger(Number(count))) {
             return Number(count);
         }

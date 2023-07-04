@@ -16,9 +16,10 @@ export class QuotesController {
         const page = Number(queryProps.page) || 1;
         const filter = queryProps.filter || "";
         const limit = 15;
+        const userId = queryProps.userId;
 
-        const result = await this.quotesService.getAll(page, limit, filter);
-        const count = await this.quotesService.count(queryProps.filter);
+        const result = await this.quotesService.getAll(page, limit, filter, userId);
+        const count = await this.quotesService.count(filter, userId);
 
         if (result instanceof CustomError) {
             return res.status(result.statusCode).json(simpleError(result.message));
