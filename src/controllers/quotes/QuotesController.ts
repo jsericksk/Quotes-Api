@@ -22,7 +22,7 @@ export class QuotesController {
         const count = await this.quotesService.count(filter, userId);
 
         if (result instanceof CustomError) {
-            return res.status(result.statusCode).json(simpleError(result.message));
+            return res.status(result.statusCode).json(simpleError(result.message, result.errorCode));
         } else if (count instanceof CustomError) {
             return res.status(count.statusCode).json(simpleError(count.message, count.errorCode));
         }
