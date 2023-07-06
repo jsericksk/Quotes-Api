@@ -63,7 +63,7 @@ export class QuotesController {
     getById = async (req: Request, res: Response): Promise<Response> => {
         const quote = await this.quotesService.getById(Number(req.params.id));
         if (quote instanceof CustomError) {
-            return res.status(quote.statusCode).json(simpleError(quote.message));
+            return res.status(quote.statusCode).json(simpleError(quote.message, quote.errorCode));
         }
         return res.status(StatusCodes.OK).json(quote);
     };
@@ -84,7 +84,7 @@ export class QuotesController {
 
         const createdQuote = await this.quotesService.create(quoteToCreate);
         if (createdQuote instanceof CustomError) {
-            return res.status(createdQuote.statusCode).json(simpleError(createdQuote.message));
+            return res.status(createdQuote.statusCode).json(simpleError(createdQuote.message, createdQuote.errorCode));
         }
         return res.status(StatusCodes.CREATED).json(createdQuote);
     };
@@ -96,7 +96,7 @@ export class QuotesController {
         const result = await this.quotesService.updateById(quoteId, loggedInUserId, updatedQuote);
 
         if (result instanceof CustomError) {
-            return res.status(result.statusCode).json(simpleError(result.message));
+            return res.status(result.statusCode).json(simpleError(result.message, result.errorCode));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);
     };
@@ -107,7 +107,7 @@ export class QuotesController {
         const result = await this.quotesService.deleteById(quoteId, loggedInUserId);
 
         if (result instanceof CustomError) {
-            return res.status(result.statusCode).json(simpleError(result.message));
+            return res.status(result.statusCode).json(simpleError(result.message, result.errorCode));
         }
         return res.status(StatusCodes.NO_CONTENT).json(result);
     };
