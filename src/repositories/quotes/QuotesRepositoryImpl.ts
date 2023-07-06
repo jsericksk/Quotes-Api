@@ -1,34 +1,25 @@
 import { StatusCodes } from "http-status-codes";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
-import { CustomError, ErrorCode, ErrorMessageConstants } from "../../errors/CustomError";
+import { CustomError, ErrorMessageConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "./QuotesRepository";
 
 export class QuotesRepositoryImpl implements QuotesRepository {
 
     async getAll(page: number, limit: number, filter: string, userId?: number): Promise<Quote[]> {
+        const query = Knex(Table.quotes).select("*").where("quote", "like", `%${filter}%`);
         if (userId) {
-            const quotesFromUserId = await Knex(Table.quotes)
-                .select("*")
-                .where("postedByUserId", userId)
-                .andWhere("quote", "like", `%${filter}%`)
-                .orderBy("publicationDate", "desc")
-                .offset((page - 1) * limit)
-                .limit(limit);
-
-            if (quotesFromUserId.length == 0) {
-                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
-            }
-            return quotesFromUserId;
+            query.andWhere("postedByUserId", userId);
         }
-
-        const quotes = await Knex(Table.quotes)
-            .select("*")
-            .where("quote", "like", `%${filter}%`)
+        const quotes = await query
             .orderBy("publicationDate", "desc")
             .offset((page - 1) * limit)
             .limit(limit);
+
+        if (userId && quotes.length == 0) {
+            throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
+        }
         return quotes;
     }
 
