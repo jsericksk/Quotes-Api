@@ -18,7 +18,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
                 .limit(limit);
 
             if (quotesFromUserId.length == 0) {
-                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND, ErrorCode.USER_WITHOUT_POSTS);
+                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
             }
             return quotesFromUserId;
         }
