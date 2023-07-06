@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
-import { CustomError, ErrorMessageConstants } from "../../errors/CustomError";
+import { CustomError, ErrorCode, ErrorMessageConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "./QuotesRepository";
 
@@ -18,7 +18,7 @@ export class QuotesRepositoryImpl implements QuotesRepository {
                 .limit(limit);
 
             if (quotesFromUserId.length == 0) {
-                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
+                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND, ErrorCode.USER_WITHOUT_POSTS);
             }
             return quotesFromUserId;
         }
