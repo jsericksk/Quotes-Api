@@ -272,10 +272,11 @@ Todos os endpoints que precisam de um **body/params/query** podem retornar uma *
 
 Todos os endpoints podem retornar um body contendo um **error** e **error_code** padrão. **error_code** sempre será retornado com um valor "unespecifed" caso não seja importante distinguir o tipo de erro. Códigos de erro disponíveis:
 
-- **email_not_available**
-- **username_not_available**
-- **search_without_results**
-- **invalid_page**
+- **email_already_exists:** Quando tentar se registrar com e-mail que já existe.
+- **username_already_exists:** Quando tentar se registrar com nome de usuário que já existe.
+- **search_without_results:** Quando nenhuma frase com o "filter" aplicado for encontrada.
+- **user_without_posts:** Quando o usuário não possuir nenhuma frase publicada.
+- **invalid_page:** Quando uma página inválida for informada na paginação.
 
 ```json
 {
