@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Table } from "../../database/Table";
 import { Knex } from "../../database/knex/Knex";
-import { CustomError, ErrorMessageConstants } from "../../errors/CustomError";
+import { CustomError, ErrorCode, ErrorMessageConstants } from "../../errors/CustomError";
 import { Quote } from "../../models/Quote";
 import { QuotesRepository } from "./QuotesRepository";
 
@@ -17,8 +17,14 @@ export class QuotesRepositoryImpl implements QuotesRepository {
             .offset((page - 1) * limit)
             .limit(limit);
 
-        if (userId && quotes.length == 0) {
-            throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND);
+        if (userId) {
+            const isSearch = (filter !== "");
+            if (quotes.length == 0) {
+                if (isSearch) {
+                    throw new CustomError("No quote found", StatusCodes.NOT_FOUND, ErrorCode.SEARCH_WITHOUT_RESULTS);
+                }
+                throw new CustomError("No quote found for this user", StatusCodes.NOT_FOUND, ErrorCode.USER_WITHOUT_POSTS);
+            }
         }
         return quotes;
     }

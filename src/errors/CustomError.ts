@@ -13,6 +13,7 @@ export const ErrorCode = {
     EMAIL_NOT_AVAILABLE: "email_not_available",
     USERNAME_NOT_AVAILABLE: "username_not_available",
     SEARCH_WITHOUT_RESULTS: "search_without_results",
+    USER_WITHOUT_POSTS: "user_without_posts",
     INVALID_PAGE: "invalid_page"
 };
 
