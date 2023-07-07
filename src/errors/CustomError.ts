@@ -10,8 +10,8 @@ export class CustomError extends Error {
 }
 
 export const ErrorCode = {
-    EMAIL_NOT_AVAILABLE: "email_not_available",
-    USERNAME_NOT_AVAILABLE: "username_not_available",
+    EMAIL_ALREADY_EXISTS: "email_already_exists",
+    USERNAME_ALREADY_EXISTS: "username_already_exists",
     SEARCH_WITHOUT_RESULTS: "search_without_results",
     USER_WITHOUT_POSTS: "user_without_posts",
     INVALID_PAGE: "invalid_page"

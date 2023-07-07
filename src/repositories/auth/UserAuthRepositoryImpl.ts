@@ -15,10 +15,10 @@ export class UserAuthRepositoryImpl implements UserAuthRepository {
         const existingUserWithEmail = await this.getUserByEmailOrUsername(user.email);
         const existingUserWithUsername = await this.getUserByEmailOrUsername(user.username);
         if (existingUserWithEmail) {
-            throw new CustomError("Email not available", StatusCodes.CONFLICT, ErrorCode.EMAIL_NOT_AVAILABLE);
+            throw new CustomError("Email not available", StatusCodes.CONFLICT, ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         if (existingUserWithUsername) {
-            throw new CustomError("Username not available", StatusCodes.CONFLICT, ErrorCode.USERNAME_NOT_AVAILABLE);
+            throw new CustomError("Username not available", StatusCodes.CONFLICT, ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
         const hashedPassword = await new PasswordCrypto().hashPassword(user.password);

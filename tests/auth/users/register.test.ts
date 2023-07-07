@@ -49,7 +49,7 @@ describe(
             expect(res2.statusCode).toEqual(StatusCodes.CONFLICT);
             expect(res2.body).toHaveProperty("error");
             expect(res2.body).toHaveProperty("error_code");
-            expect(res2.body.error_code).toContain(ErrorCode.EMAIL_NOT_AVAILABLE);
+            expect(res2.body.error_code).toContain(ErrorCode.EMAIL_ALREADY_EXISTS);
         });
 
         it("Should give error when trying to register with duplicate username", async () => {
@@ -76,7 +76,7 @@ describe(
             expect(res2.statusCode).toEqual(StatusCodes.CONFLICT);
             expect(res2.body).toHaveProperty("error");
             expect(res2.body).toHaveProperty("error_code");
-            expect(res2.body.error_code).toContain(ErrorCode.USERNAME_NOT_AVAILABLE);
+            expect(res2.body.error_code).toContain(ErrorCode.USERNAME_ALREADY_EXISTS);
         });
 
         it("Should give error when trying to register with invalid email", async () => {
