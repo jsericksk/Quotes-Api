@@ -24,7 +24,7 @@ export class JWTService {
         if (!this.accessTokenSecretKey) {
             return new Error(ErrorMesage.JWT_SECRET_NOT_FOUND);
         }
-        const token = jwt.sign(jwtData, this.accessTokenSecretKey, { expiresIn: "24h" });
+        const token = jwt.sign(jwtData, this.accessTokenSecretKey, { expiresIn: "60m" });
         return token;
     }
 
