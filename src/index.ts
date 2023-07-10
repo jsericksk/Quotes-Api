@@ -14,7 +14,7 @@ if (process.env.IS_LOCALHOST !== "true") {
         Knex.seed.run()
             .then(() => startServer())
             .catch(console.log);
-    });
+    }).catch(console.log);
 } else {
     startServer();
 }
